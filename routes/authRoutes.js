@@ -81,6 +81,9 @@ const router = express.Router();
  *                 type: string
  *                 enum: [admin, user]
  *                 default: user
+ *               adminSecretKey:
+ *                 type: string
+ *                 description: Kunci rahasia yang diperlukan jika mendaftar sebagai admin
  *     responses:
  *       201:
  *         description: Pendaftaran berhasil
@@ -93,12 +96,14 @@ const router = express.Router();
  *                   type: string
  *       400:
  *         description: Validasi gagal atau email sudah terdaftar
+ *       403:
+ *         description: Tidak diizinkan mendaftar sebagai admin (kunci rahasia tidak valid)
  *       500:
  *         description: Server error
  */
 router.post('/register', async (req, res) => {
     try {
-        const { name, email, password, role } = req.body;
+        const { name, email, password, role, adminSecretKey } = req.body;
 
         // Validasi input
         if (!name || !email || !password) {
@@ -114,6 +119,16 @@ router.post('/register', async (req, res) => {
         // Validasi password length
         if (password.length < 6) {
             return res.status(400).json({ message: 'Password minimal 6 karakter' });
+        }
+
+        // Validasi role admin
+        if (role === 'admin') {
+            // Periksa apakah adminSecretKey disediakan dan valid
+            if (!adminSecretKey || adminSecretKey !== process.env.ADMIN_SECRET_KEY) {
+                return res.status(403).json({ 
+                    message: 'Tidak diizinkan mendaftar sebagai admin. Kunci rahasia admin tidak valid.' 
+                });
+            }
         }
 
         const existingUser = await User.findOne({ email });
