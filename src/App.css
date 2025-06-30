@@ -1,3 +1,4 @@
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -17,6 +18,10 @@
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
+.logo.marginal:hover
+{
+  filter: drop-shadow(0 0 2em #ff4081aa);
+}
 
 @keyframes logo-spin {
   from {
@@ -32,6 +37,8 @@
     animation: logo-spin infinite 20s linear;
   }
 }
+
+
 
 .card {
   padding: 2em;
