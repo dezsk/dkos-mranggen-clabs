@@ -7,7 +7,7 @@ const RegisterPage = () => {
 
 
   return (
-    <div className="font-jakarta">
+    <div className="RegisterPage">
       <Header />
       <FormRegister />
     </div>

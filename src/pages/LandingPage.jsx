@@ -11,7 +11,7 @@ const LandingPage = () => {
 
 
   return (
-    <div className="font-jakarta">
+    <div className="LandingPage">
       <Header />
       <HeroSection user={user} />
       <KeunggulanSection />

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const useAuthForm = () => {
   const [email, setEmail] = useState('');
@@ -26,7 +27,11 @@ const useAuthForm = () => {
     setCaptchaVerified(!!value);
   };
 
-  const handleSubmit = (e) => {
+        const navigate = useNavigate();
+
+  const isFormValid = validateEmail(email) && validatePassword(password) && captchaVerified;
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const validEmail = validateEmail(email);
@@ -36,13 +41,34 @@ const useAuthForm = () => {
     if (!validPassword) setPasswordError('Password minimal 6 karakter');
 
     if (validEmail && validPassword && captchaVerified) {
-      // Kirim data ke backend di sini
-      console.log('Email:', email);
-      console.log('Password:', password);
+      try {
+        const response = await fetch ('https://dkos-mranggen-clabs-production.up.railway.app/api/auth/login',{
+          method : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Login berhasil');
+        navigate('/HomePage');
+      }else{
+        alert('Login gagal: ' + data.message);
+      }
+      } catch (error) {
+        alert('Terjadi kesalahan: ' + error.message);
+        console.error('Login error:', error);
+      }
     }
   };
 
-  const isFormValid = validateEmail(email) && validatePassword(password) && captchaVerified;
+  
 
   return {
     email,
