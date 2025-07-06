@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import kamarA from '../../assets/LandingPage/kamarA.svg';
 import kamarB from '../../assets/LandingPage/kamarB.svg';
-import AlertLogin from '../Auth/AlertLogin';
+import AlertLogin from '../Alert/AlertLogin';
 
 const PilihanKamar = ({user}) => {
   const [showAlert, setShowAlert] = useState(false);

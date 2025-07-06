@@ -1,6 +1,6 @@
 import React from 'react';
 import BangunanKost from '../../assets/LandingPage/BangunanKost.svg';
-import AlertLogin from '../Auth/AlertLogin';
+import AlertLogin from '../Alert/AlertLogin';
 
 const HeroSection = () => {
   const [showAlert, setShowAlert] = React.useState(false);
@@ -25,7 +25,7 @@ return(
             <button 
             onClick={handleSewaClick}
             className="bg-[#50A75F] border border-white text-white font-semibold
-             px-4 py-2 rounded hover:bg-[#3c8a4b] transition">
+            px-4 py-2 rounded hover:bg-[#3c8a4b] transition">
               Ajukan Sewa
             </button>
           </div>
