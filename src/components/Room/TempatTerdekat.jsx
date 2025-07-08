@@ -12,14 +12,16 @@ const TempatTerdekat = () => {
   ];
 
   return (
-    <div className="px-4">
-      <h3 className="text-xl font-semibold mb-2">Tempat Terdekat</h3>
-      <ul className="list-disc pl-5 space-y-1 text-gray-700">
-        {places.map((place, i) => (
-          <li key={i}><FaMapMarkerAlt className="inline mr-1" /> {place}</li>
-        ))}
-      </ul>
-    </div>
+    <div className='max-w-6xl mx-auto px-4 mt-6 flex flex-col lg:flex-row gap-8'>
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold mb-2">Tempat Terdekat</h3>
+        <ul className="list-disc pl-5 space-y-1 text-gray-700">
+          {places.map((place, i) => (
+            <li key={i}><FaMapMarkerAlt className="inline mr-1" /> {place}</li>
+          ))}
+        </ul>
+      </div>
+    </div>  
   );
 };
 
