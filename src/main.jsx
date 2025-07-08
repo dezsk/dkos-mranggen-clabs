@@ -10,7 +10,10 @@ import DetailRoomA from './pages/DetailRoomA.jsx';
 import DetailRoomB from './pages/DetailRoomB.jsx';
 import Form from './pages/PageFormSewaKamar.jsx';
 import PagePembayaran from './pages/PagePembayaran.jsx';
-import DashboardAdmin from './components/Dashboard/Admin/DashboardAdmin.jsx';
+import PageDashboardAdmin from './pages/PageDashboardAdmin.jsx';
+import PageDashboardUser from './pages/PageDashboardUser.jsx';
+import KelolaKamarA from './components/Dashboard/Admin/KelolaKamardanIklan/KamarA.jsx';
+import KelolaKamarB from './components/Dashboard/Admin/KelolaKamardanIklan/KamarB.jsx';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -25,7 +28,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/DetailRoomB" element={<DetailRoomB />} />
         <Route path="/PageFormSewaKamar" element={<Form />} />
         <Route path="/PagePembayaran" element={<PagePembayaran />} />
-        <Route path="/PageDashboardAdmin" element={<DashboardAdmin />} />
+        <Route path="/PageDashboardAdmin" element={<PageDashboardAdmin/>} />
+        <Route path="/PageDashboardUser" element={<PageDashboardUser/>} />
+        <Route path="/KamarA" element={<KelolaKamarA/>} />
+        <Route path="/KamarB" element={<KelolaKamarB/>} />
         {/* Tambahkan rute lain sesuai kebutuhan */}
 
       </Routes>

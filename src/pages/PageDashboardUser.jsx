@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import HeaderAdmin from '../components/Dashboard/Admin/HeaderAdmin';
-import Dashboard from '../components/Dashboard/Admin/DashboardAdmin';
-import SideMenu from '../components/Dashboard/Admin/SideMenu';
-import KosSaya from '../components/Dashboard/Admin/KosSaya';
-import KelolaKamardanIklan from '../components/Dashboard/Admin/KelolaKamardanIklan/KelolaKamardanIklan';
-import KelolaPenghuni from '../components/Dashboard/Admin/KelolaPenghuni/KelolaPenghuni';
-import Pengaturan from '../components/Dashboard/Admin/Pengaturan/Pengaturan';
+import Header from '../components/General/HeaderGeneral';
+import SideMenu from '../components/Dashboard/User/SideMenu';
+import KosSaya from '../components/Dashboard/User/KosSaya';
+import KelolaKamardanIklan from '../components/Dashboard/User/KelolaKamardanIklan/KelolaKamardanIklan';
+import KelolaPenghuni from '../components/Dashboard/User/KelolaPenghuni/KelolaPenghuni';
+import Pengaturan from '../components/Dashboard/User/Pengaturan/Pengaturan';
 
 
-const PageDashboardAdmin = () => {
+const PageDashboardUser = () => {
   const [activePage,setActivePage] = useState('KosSaya');
 
   const renderContent = () => {
@@ -27,7 +26,7 @@ const PageDashboardAdmin = () => {
 
   return (
     <div>
-      <HeaderAdmin/>
+      <Header/>
         <div className="flex h-screen">
           <div className='bg-white shadow '>
             <SideMenu setActivePage={setActivePage} activePage={activePage}/>
@@ -41,4 +40,4 @@ const PageDashboardAdmin = () => {
   );
 };
 
-export default PageDashboardAdmin;
+export default PageDashboardUser;

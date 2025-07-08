@@ -1,6 +1,6 @@
+import React from 'react';
 
-
-const DashboardAdmin = () => {
+const DashboardUser = () => {
   return (
     <div className="min-h-screen bg-white font-jakarta">
 
@@ -11,8 +11,8 @@ const DashboardAdmin = () => {
           <div className="flex items-center gap-3 mb-8">
             <FaUserCircle className="text-4xl text-[#444]" />
             <div>
-              <p className="font-semibold text-sm">Nama Pemilik</p>
-              <p className="text-xs text-gray-500">Pemilik Kos</p>
+              <p className="font-semibold text-sm">Umar Hatta</p>
+              <p className="text-xs text-gray-500">Penyewa Kos</p>
             </div>
           </div>
 
@@ -74,4 +74,4 @@ const DashboardAdmin = () => {
   );
 };
 
-export default DashboardAdmin;
+export default DashboardUser;

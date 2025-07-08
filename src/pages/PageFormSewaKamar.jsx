@@ -4,7 +4,7 @@ import Form from '../components/FormSewaKamar/FormSewa';
 
 const FormSewaKamar = () => {
   return (
-    <div className="HomePage">
+    <div className="FormSewaKamar">
       <Header/>
       <Form/>
 
