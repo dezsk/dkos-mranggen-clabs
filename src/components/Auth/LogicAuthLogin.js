@@ -57,11 +57,20 @@ const useAuthForm = () => {
 
       if (response.ok) {
         alert('Login berhasil');
-        navigate('/HomePage');
-      }else{
+
+        console.log('DATA LOGIN:', data);
+
+      const userEmail = data.user?.email || data.email;
+
+        if (userEmail === 'dmranggenkost@gmail.com') {
+          navigate('/PageDashboardAdmin');
+        } else {
+          navigate('/HomePage');
+        } 
+      } else {
         alert('Login gagal: ' + data.message);
-      }
-      } catch (error) {
+        }
+      }catch (error) {
         alert('Terjadi kesalahan: ' + error.message);
         console.error('Login error:', error);
       }

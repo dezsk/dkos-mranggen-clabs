@@ -8,9 +8,9 @@ import HomePage from './pages/HomePage.jsx';
 import Kamar from './components/General/PilihanKamar.jsx';
 import DetailRoomA from './pages/DetailRoomA.jsx';
 import DetailRoomB from './pages/DetailRoomB.jsx';
-import DashboardAdmin from './pages/DashboardAdmin.jsx';
 import Form from './pages/PageFormSewaKamar.jsx';
 import PagePembayaran from './pages/PagePembayaran.jsx';
+import DashboardAdmin from './components/Dashboard/Admin/DashboardAdmin.jsx';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -23,9 +23,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/PilihanKamar" element={<Kamar />} />
         <Route path="/DetailRoomA" element={<DetailRoomA />} />
         <Route path="/DetailRoomB" element={<DetailRoomB />} />
-        <Route path="/DashboardAdmin" element={<DashboardAdmin />} />
         <Route path="/PageFormSewaKamar" element={<Form />} />
         <Route path="/PagePembayaran" element={<PagePembayaran />} />
+        <Route path="/PageDashboardAdmin" element={<DashboardAdmin />} />
         {/* Tambahkan rute lain sesuai kebutuhan */}
 
       </Routes>
