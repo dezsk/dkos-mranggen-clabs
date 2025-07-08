@@ -7,6 +7,7 @@ const useAuthForm = () => {
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [captchaVerified, setCaptchaVerified] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const validateEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
   const validatePassword = (value) => value.length >= 6;
@@ -27,7 +28,9 @@ const useAuthForm = () => {
     setCaptchaVerified(!!value);
   };
 
-        const navigate = useNavigate();
+  const togglePassword = () => setShowPassword((prev) => !prev);
+
+  const navigate = useNavigate();
 
   const isFormValid = validateEmail(email) && validatePassword(password) && captchaVerified;
 
@@ -90,6 +93,9 @@ const useAuthForm = () => {
     onChange,
     handleSubmit,
     isFormValid,
+    showPassword,
+    togglePassword,
+
   };
 };
 

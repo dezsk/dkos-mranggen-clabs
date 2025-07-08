@@ -1,6 +1,7 @@
 import React from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 import LogicAuthRegister from './LogicAuthRegister';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 
 
@@ -74,7 +75,7 @@ export default function FormRegister() {
               className='absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-600 focus:outline-none'
               tabIndex={-1}
             >
-              {showPassword ? '🙈' : '👁️'}
+              {showPassword ? <FaEye/> : <FaEyeSlash/>}
             </button>
           </div>
         </div>
