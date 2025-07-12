@@ -63,6 +63,8 @@ const useAuthForm = () => {
 
         console.log('DATA LOGIN:', data);
 
+        localStorage.setItem('token', data.token);
+
       const userEmail = data.user?.email || data.email;
 
         if (userEmail === 'dmranggenkost@gmail.com') {
