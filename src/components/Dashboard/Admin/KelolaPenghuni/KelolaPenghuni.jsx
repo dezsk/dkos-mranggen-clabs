@@ -33,7 +33,12 @@ const getStatusStyle = (status) => {
   return 'bg-red-600 text-white';
 };
 
-const KelolaPenghuni = () => {
+const KelolaPenghuni = ({setActivePage}) => {
+
+  const DetailPengguna = () => {
+    setActivePage('DetailPenghuni')
+  };
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6">Kelola Penghuni</h1>
@@ -62,8 +67,10 @@ const KelolaPenghuni = () => {
               </p>
               <p>Nomor handphone : {penghuni.noHp}</p>
             </div>
-            <button className="bg-green-700 text-white px-4 py-1 rounded hover:bg-green-800">
-              AKSI
+            <button 
+            onClick={DetailPengguna}
+            className="bg-green-700 text-white px-4 py-1 rounded hover:bg-green-800">
+              Detail
             </button>
           </div>
         ))}

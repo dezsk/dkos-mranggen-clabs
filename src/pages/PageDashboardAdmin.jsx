@@ -6,6 +6,10 @@ import KosSaya from '../components/Dashboard/Admin/KosSaya';
 import KelolaKamardanIklan from '../components/Dashboard/Admin/KelolaKamardanIklan/KelolaKamardanIklan';
 import KelolaPenghuni from '../components/Dashboard/Admin/KelolaPenghuni/KelolaPenghuni';
 import Pengaturan from '../components/Dashboard/Admin/Pengaturan/Pengaturan';
+import KamarA from '../components/Dashboard/Admin/KelolaKamardanIklan/KamarA';
+import KamarB from '../components/Dashboard/Admin/KelolaKamardanIklan/KamarB';
+import DetailPenghuni from '../components/Dashboard/Admin/KelolaPenghuni/DetailPenghuni';
+import GantiPassword from '../components/Dashboard/Admin/Pengaturan/GantiPassword';
 
 
 const PageDashboardAdmin = () => {
@@ -14,13 +18,21 @@ const PageDashboardAdmin = () => {
   const renderContent = () => {
     switch(activePage) {
       case 'KosSaya':
-        return <KosSaya/>;
+        return <KosSaya setActivePage={setActivePage}/>;
       case 'KelolaKamardanIklan':
-        return <KelolaKamardanIklan/>
+        return <KelolaKamardanIklan setActivePage={setActivePage}/>
       case 'KelolaPenghuni':
-        return <KelolaPenghuni/>
+        return <KelolaPenghuni setActivePage={setActivePage}/>
       case 'Pengaturan':
-        return <Pengaturan/>
+        return <Pengaturan setActivePage={setActivePage}/>
+      case 'KamarA':
+        return <KamarA setActivePage={setActivePage}/>
+      case 'KamarB':
+        return <KamarB setActivePage={setActivePage}/>
+      case 'DetailPenghuni':
+        return <DetailPenghuni setActivePage={setActivePage}/>
+      case 'GantiPassword':
+        return <GantiPassword setActivePage={setActivePage}/>
     }
   };
 

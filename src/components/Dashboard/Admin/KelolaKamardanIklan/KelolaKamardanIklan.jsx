@@ -1,15 +1,13 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 
-const KelolaKamardanIklan = () => {
+const KelolaKamardanIklan = ({setActivePage}) => {
 
-    const navigate = useNavigate();
     const onClickKamarA = () => {
-        navigate ('/KamarA');
+        setActivePage ('KamarA');
     };
 
     const onClickKamarB = () => {
-        navigate ('/KamarB');
+        setActivePage ('KamarB');
     };
 
   return (
@@ -45,7 +43,7 @@ const KelolaKamardanIklan = () => {
         </div>
 
         <h1 className="text-xl font-semibold mt-10 text-black flex items-center gap-2">
-            Kelola Iklan 
+            Iklan Aktif 
         </h1>
         <div className="flex gap-6">
             <div className="Iklan Kamar A">

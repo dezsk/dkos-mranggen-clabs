@@ -1,80 +1,123 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { FaArrowLeft } from 'react-icons/fa';
 
-const DetailPenghuni = ({ data }) => {
-  const {
-    nama,
-    tipeKamar,
-    durasiSewa,
-    mulaiSewa,
-    berakhirSewa,
-    status,
-    noHP,
-    statusPembayaran,
-    waktuPembayaran,
-    bulanPembayaran,
-  } = data;
+const DetailPenghuni = ({setActivePage}) => {
+  const [tab, setTab] = useState('kirim');
 
-  const renderStatusLabel = () => {
-    switch (statusPembayaran) {
-      case 'perlu-verifikasi':
-        return (
-          <div className="text-red-500 font-medium text-sm">Perlu diverifikasi</div>
-        );
-      case 'terverifikasi':
-        return (
-          <div className="text-green-600 font-medium text-sm">Terverifikasi</div>
-        );
-      default:
-        return null;
-    }
-  };
+  const handleBack = () => {
+    setActivePage('KelolaPenghuni')
+  }
 
   return (
-    <div className="border rounded-lg p-4 bg-white shadow mb-6">
-      <h2 className="font-semibold mb-2">Kelola {nama}</h2>
-      <div className="text-sm space-y-1">
-        <p><span className="font-semibold">Nama</span> : {nama}</p>
-        <p><span className="font-semibold">Tipe kamar</span> : {tipeKamar}</p>
-        <p><span className="font-semibold">Durasi sewa</span> : {durasiSewa}</p>
-        <p><span className="font-semibold">Mulai sewa</span> : {mulaiSewa}</p>
-        <p><span className="font-semibold">Berakhir sewa</span> : {berakhirSewa}</p>
+    <div className="p-4 max-w-xl bg-white rounded shadow-md text-sm text-gray-800">
+      {/* Informasi Penghuni */}
+
+      <div className="flex items-center gap-2 mb-4 text-[#989898]">
+              <button onClick={handleBack} className="text-xl">
+                <FaArrowLeft />
+              </button>
+              kembali
+      </div>
+
+      <div className="mb-5 space-y-1 leading-relaxed">
+        <p className="text-lg font-bold text-black">Kelola Muhammad Umar Hatta</p>
+        <p>Nama : Muhammad Umar Hatta</p>
+        <p>Tipe kamar : A</p>
+        <p>Durasi sewa : 1 Bulan</p>
+        <p>Mulai sewa : 1 Januari 2025</p>
+        <p>Berlaku sampai : 28 Februari 2025</p>
         <p>
-          <span className="font-semibold">Status</span> :{' '}
-          <span className={`inline-block px-2 py-0.5 text-xs rounded-full text-white ${status === 'Aktif' ? 'bg-green-500' : 'bg-red-500'}`}>
-            {status}
+          Status:{' '}
+          <span className="bg-green-500 text-white text-xs px-2 py-1 rounded">
+            Aktif
           </span>
         </p>
-        <p><span className="font-semibold">Nomor handphone</span> : {noHP}</p>
+        <p>Nomor handphone : 0123456789</p>
       </div>
 
-      <hr className="my-4" />
-
-      <div>
-        <h3 className="font-semibold mb-1">Tagihan</h3>
-
-        <div className="flex gap-4 flex-wrap">
-          {/* Tombol Verifikasi */}
-          <button
-            disabled={statusPembayaran === 'terverifikasi'}
-            className={`px-4 py-1 rounded border ${statusPembayaran === 'terverifikasi' ? 'bg-gray-100 text-gray-500' : 'bg-green-100 text-green-700 border-green-400'}`}
-          >
-            {statusPembayaran === 'terverifikasi' ? 'Sudah Dibayar' : 'Verifikasi Pembayaran'}
-          </button>
-
-          {renderStatusLabel()}
-        </div>
-
-        <div className="flex items-center justify-between mt-3 border rounded p-2">
-          <div>
-            <p className="font-medium text-green-700">Pembayaran bulan ke–{bulanPembayaran}</p>
-          </div>
-          <div className="text-right text-xs text-gray-600">
-            {waktuPembayaran}
-            <br />
-            <button className="text-sm bg-green-600 text-white px-3 py-1 rounded mt-1">Detail</button>
-          </div>
-        </div>
+      {/* Tab Header */}
+      <div className="flex gap-3 mb-3">
+        <button
+          onClick={() => setTab('kirim')}
+          className={`px-4 py-1 rounded-full text-sm font-semibold border transition ${
+            tab === 'kirim'
+              ? 'bg-red-100 text-red-700 border-red-500'
+              : 'bg-white text-gray-400 border-gray-300'
+          }`}
+        >
+          Kirim Tagihan
+        </button>
+        <button
+          onClick={() => setTab('konfirmasi')}
+          className={`px-4 py-1 rounded-full text-sm font-semibold border transition ${
+            tab === 'konfirmasi'
+              ? 'bg-yellow-100 text-yellow-700 border-yellow-500'
+              : 'bg-white text-gray-400 border-gray-300'
+          }`}
+        >
+          Konfirmasi Pembayaran
+        </button>
+        <button
+          onClick={() => setTab('riwayat')}
+          className={`px-4 py-1 rounded-full text-sm font-semibold border transition ${
+            tab === 'riwayat'
+              ? 'bg-green-100 text-green-700 border-green-500'
+              : 'bg-white text-gray-400 border-gray-300'
+          }`}
+        >
+          Riwayat Pembayaran
+        </button>
       </div>
+
+      {/* Tab Content */}
+      {tab === 'kirim' && (
+        <div className="border rounded-lg p-4 bg-white space-y-3">
+          <p className="text-red-500 font-semibold text-sm">Kirim Tagihan</p>
+          <p className="text-gray-800 font-medium">Tagihan bulan ke–2</p>
+          <p className="text-gray-700">Jatuh tempo <strong>10 Juli 2025</strong></p>
+          <p className="text-black text-lg font-bold">Rp 900.000</p>
+          <div className="flex justify-between items-center">
+            <span className="text-xs text-gray-500">Tenggat 21 hari lagi</span>
+            <button className="bg-green-600 text-white px-5 py-1 rounded text-sm hover:bg-green-700">
+              Kirim Tagihan
+            </button>
+          </div>
+        </div>
+      )}
+
+      {tab === 'konfirmasi' && (
+        <div className="border rounded-lg p-4 bg-white space-y-2">
+          <p className="text-yellow-500 font-semibold text-sm">Konfirmasi Pembayaran</p>
+          <p className="text-gray-800 font-medium">Pembayaran bulan ke–2</p>
+          <p className="text-black text-lg font-bold">Rp 900.000</p>
+          <p className="text-xs text-gray-500">14 Juni 2025, 10.00</p>
+          <div className="flex gap-4 mt-3">
+            <button className="bg-green-500 text-white px-4 py-1 rounded text-sm hover:bg-green-600">
+              Verifikasi
+            </button>
+            <button className="border border-gray-400 px-4 py-1 rounded text-sm hover:bg-gray-100">
+              Tandai Sudah Dibayar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {tab === 'riwayat' && (
+        <div className="border rounded-lg p-4 bg-white space-y-3">
+          <p className="text-green-600 font-semibold text-sm">Sudah Dibayar</p>
+          <p className="text-gray-800 font-medium">Pembayaran bulan ke–1</p>
+          <p className="text-black text-lg font-bold">Rp 900.000</p>
+          <p className="text-sm text-gray-600">Terbayar pada 9 Juli 2025</p>
+          <div className="flex justify-between items-center">
+            <span className="text-xs italic text-gray-500">
+              Terkonfirmasi admin pada 9 Juli 2025, 10:30 WIB
+            </span>
+            <button className="bg-green-600 text-white px-4 py-1 rounded text-sm hover:bg-green-700">
+              Unduh Bukti
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

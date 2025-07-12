@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { FaArrowLeft } from 'react-icons/fa';
 //import { useNavigate } from 'react-router-dom';
 
 
-export default function FormKamarB() {
+export default function FormKamarB({setActivePage}) {
 
   //const navigate = useNavigate();
 
@@ -34,10 +35,19 @@ const [tempatTerdekat, setTempatTerdekat] = useState(['']); // mulai dari 1 kolo
     setTempatTerdekat(newTempat);
   };
 
+   const handleBack = () => {
+    setActivePage('KelolaKamardanIklan')
+  };
+
 
   return (
     <div className="max-w-screen-xl mx-auto mt-2 p-6 bg-white shadow rounded">
-
+      <div className="flex items-center gap-2 mb-4 text-[#989898]">
+              <button onClick={handleBack} className="text-xl">
+                <FaArrowLeft />
+              </button>
+              kembali
+            </div>
       <h1 className="text-xl font-semibold mb-4 text-black flex items-center gap-2">
         Kelola Kamar Tipe B
       </h1>
