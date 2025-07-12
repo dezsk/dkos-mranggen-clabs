@@ -14,6 +14,7 @@ import PageDashboardAdmin from './pages/PageDashboardAdmin.jsx';
 import PageDashboardUser from './pages/PageDashboardUser.jsx';
 import KelolaKamarA from './components/Dashboard/Admin/KelolaKamardanIklan/KamarA.jsx';
 import KelolaKamarB from './components/Dashboard/Admin/KelolaKamardanIklan/KamarB.jsx';
+import FormBayarKos from './components/Dashboard/User/KelolaTagihan/FormBayarKos.jsx';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -32,6 +33,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/PageDashboardUser" element={<PageDashboardUser/>} />
         <Route path="/KamarA" element={<KelolaKamarA/>} />
         <Route path="/KamarB" element={<KelolaKamarB/>} />
+        <Route path='/FormBayarKos' element={<FormBayarKos/>}/>
         {/* Tambahkan rute lain sesuai kebutuhan */}
 
       </Routes>

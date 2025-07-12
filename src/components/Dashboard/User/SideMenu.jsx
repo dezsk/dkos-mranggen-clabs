@@ -25,7 +25,7 @@ const SideMenu = ({setActivePage, activePage}) => {
             </button>
             
             <button
-              onClick={() => setActivePage('')}
+              onClick={() => setActivePage('RiwayatTransaksi')}
               className={`flex items-center gap-2 w-full text-left mb-2 px-2 py-1 hover:text-[#50A75F] ${
                 activePage === '' ? 'font-bold text-green-600' : 'text-gray-700'
               }`}>
@@ -34,9 +34,9 @@ const SideMenu = ({setActivePage, activePage}) => {
             </button>
 
             <button
-              onClick={() => setActivePage('')}
+              onClick={() => setActivePage('KelolaTagihan')}
               className={`flex items-center gap-2 w-full text-left mb-2 px-2 py-1 hover:text-[#50A75F] ${
-                activePage === '' ? 'font-bold text-green-600' : 'text-gray-700'
+                activePage === 'KelolaTagihan' ? 'font-bold text-green-600' : 'text-gray-700'
               }`}>
               <FaWallet className="text-lg" />
               <span>Tagihan</span>
