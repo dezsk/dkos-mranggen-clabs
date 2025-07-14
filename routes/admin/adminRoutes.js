@@ -8,6 +8,9 @@ const paymentController = require('../../controllers/admin/paymentController');
 const announcementController = require('../../controllers/admin/announcementController');
 const galleryController = require('../../controllers/admin/galleryController');
 
+// Import upload middleware
+const { uploadImage } = require('../../config/cloudinary');
+
 // Protect all routes
 router.use(verifyAdmin);
 
@@ -1056,7 +1059,7 @@ router.get('/gallery/kost/:kostId', galleryController.getGalleryByKost);
  * @swagger
  * /api/admin/gallery:
  *   post:
- *     summary: Mengunggah item galeri baru
+ *     summary: Menambahkan item galeri baru
  *     tags: [Admin Gallery]
  *     security:
  *       - bearerAuth: []
@@ -1068,8 +1071,7 @@ router.get('/gallery/kost/:kostId', galleryController.getGalleryByKost);
  *             type: object
  *             required:
  *               - title
- *               - image
- *               - type
+ *               - kostId
  *             properties:
  *               title:
  *                 type: string
@@ -1077,13 +1079,20 @@ router.get('/gallery/kost/:kostId', galleryController.getGalleryByKost);
  *               description:
  *                 type: string
  *                 description: Deskripsi gambar
- *               image:
+ *               mediaType:
+ *                 type: string
+ *                 enum: [image, video]
+ *                 description: Opsional jika mengunggah file gambar
+ *               media:
  *                 type: string
  *                 format: binary
  *                 description: File gambar yang akan diunggah
+ *               mediaUrl:
+ *                 type: string
+ *                 description: URL video (diperlukan jika mediaType adalah video)
  *               kostId:
  *                 type: string
- *                 description: ID kost terkait (opsional)
+ *                 description: ID kost terkait
  *               type:
  *                 type: string
  *                 enum: [kost, facility, other]
@@ -1094,7 +1103,7 @@ router.get('/gallery/kost/:kostId', galleryController.getGalleryByKost);
  *                 description: Status aktif gambar
  *     responses:
  *       201:
- *         description: Item galeri berhasil diunggah
+ *         description: Item galeri berhasil ditambahkan
  *         content:
  *           application/json:
  *             schema:
@@ -1110,10 +1119,12 @@ router.get('/gallery/kost/:kostId', galleryController.getGalleryByKost);
  *         description: Token tidak valid atau kedaluwarsa
  *       403:
  *         description: Tidak memiliki akses admin
+ *       404:
+ *         description: Kost tidak ditemukan
  *       500:
  *         description: Server error
  */
-router.post('/gallery', galleryController.uploadGalleryItem);
+router.post('/gallery', uploadImage.single('media'), galleryController.uploadGalleryItem);
 /**
  * @swagger
  * /api/admin/gallery/{id}:
@@ -1142,10 +1153,17 @@ router.post('/gallery', galleryController.uploadGalleryItem);
  *               description:
  *                 type: string
  *                 description: Deskripsi gambar
- *               image:
+ *               mediaType:
+ *                 type: string
+ *                 enum: [image, video]
+ *                 description: Tipe media (gambar atau video)
+ *               media:
  *                 type: string
  *                 format: binary
- *                 description: File gambar baru (opsional)
+ *                 description: File gambar baru yang akan diunggah
+ *               mediaUrl:
+ *                 type: string
+ *                 description: URL video baru (jika mediaType adalah video)
  *               kostId:
  *                 type: string
  *                 description: ID kost terkait
@@ -1179,7 +1197,7 @@ router.post('/gallery', galleryController.uploadGalleryItem);
  *       500:
  *         description: Server error
  */
-router.put('/gallery/:id', galleryController.updateGalleryItem);
+router.put('/gallery/:id', uploadImage.single('media'), galleryController.updateGalleryItem);
 /**
  * @swagger
  * /api/admin/gallery/{id}:

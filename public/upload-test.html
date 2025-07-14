@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Upload Gambar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #response {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 5px solid #4CAF50;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        .preview {
+            max-width: 300px;
+            max-height: 300px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Upload Gambar</h1>
+    
+    <form id="uploadForm">
+        <h2>Upload Gambar Baru</h2>
+        <label for="title">Judul:</label>
+        <input type="text" id="title" name="title" required>
+        
+        <label for="description">Deskripsi:</label>
+        <textarea id="description" name="description" rows="3"></textarea>
+        
+        <label for="kostId">ID Kost:</label>
+        <input type="text" id="kostId" name="kostId" required>
+        
+        <label for="mediaType">Tipe Media:</label>
+        <select id="mediaType" name="mediaType">
+            <option value="image">Gambar</option>
+            <option value="video">Video</option>
+        </select>
+        
+        <div id="imageUpload">
+            <label for="media">Pilih Gambar:</label>
+            <input type="file" id="media" name="media" accept="image/*">
+            <img id="imagePreview" class="preview">
+        </div>
+        
+        <div id="videoUpload" style="display:none;">
+            <label for="mediaUrl">URL Video:</label>
+            <input type="text" id="mediaUrl" name="mediaUrl" placeholder="Masukkan URL video (YouTube, dll)">
+        </div>
+        
+        <button type="submit">Upload</button>
+    </form>
+    
+    <div id="response"></div>
+    
+    <script>
+        // Toggle antara upload gambar dan URL video
+        document.getElementById('mediaType').addEventListener('change', function() {
+            const imageUpload = document.getElementById('imageUpload');
+            const videoUpload = document.getElementById('videoUpload');
+            
+            if (this.value === 'image') {
+                imageUpload.style.display = 'block';
+                videoUpload.style.display = 'none';
+            } else {
+                imageUpload.style.display = 'none';
+                videoUpload.style.display = 'block';
+            }
+        });
+        
+        // Preview gambar
+        document.getElementById('media').addEventListener('change', function() {
+            const preview = document.getElementById('imagePreview');
+            const file = this.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Handle form submission
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const responseDiv = document.getElementById('response');
+            
+            try {
+                // Dapatkan token dari localStorage atau tempat lain sesuai aplikasi Anda
+                const token = prompt('Masukkan token JWT admin:');
+                
+                if (!token) {
+                    responseDiv.textContent = 'Token diperlukan untuk upload';
+                    return;
+                }
+                
+                const response = await fetch('/api/admin/gallery', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    responseDiv.textContent = 'Upload berhasil!\n\n' + JSON.stringify(data, null, 2);
+                    // Reset form
+                    this.reset();
+                    document.getElementById('imagePreview').style.display = 'none';
+                } else {
+                    responseDiv.textContent = 'Error: ' + data.message + '\n\n' + JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                responseDiv.textContent = 'Error: ' + error.message;
+            }
+        });
+    </script>
+</body>
+</html>

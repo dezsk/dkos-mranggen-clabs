@@ -1,5 +1,6 @@
 const Gallery = require('../../models/Gallery');
 const Kost = require('../../models/Kost');
+const { cloudinary } = require('../../config/cloudinary');
 
 // Get all gallery items
 exports.getAllGalleryItems = async (req, res) => {
@@ -32,12 +33,35 @@ exports.getGalleryByKost = async (req, res) => {
 // Upload new gallery item
 exports.uploadGalleryItem = async (req, res) => {
     try {
-        const { title, description, mediaType, mediaUrl, kostId } = req.body;
+        const { title, description, mediaType, kostId } = req.body;
+        let mediaUrl = '';
 
         // Verify kost exists
         const kost = await Kost.findById(kostId);
         if (!kost) {
             return res.status(404).json({ message: 'Kost not found' });
+        }
+
+        // Handle file upload if present
+        if (req.file) {
+            // File sudah diupload ke Cloudinary oleh middleware multer-storage-cloudinary
+            mediaUrl = req.file.path; // URL gambar dari Cloudinary
+        } else if (req.body.mediaUrl) {
+            // Jika tidak ada file tetapi ada URL (untuk video)
+            mediaUrl = req.body.mediaUrl;
+        } else {
+            return res.status(400).json({ message: 'Media file or URL is required' });
+        }
+
+        // Tentukan mediaType berdasarkan file yang diupload jika tidak ditentukan
+        if (!mediaType) {
+            if (req.file) {
+                mediaType = 'image';
+            } else if (mediaUrl.includes('youtube') || mediaUrl.includes('youtu.be')) {
+                mediaType = 'video';
+            } else {
+                return res.status(400).json({ message: 'Media type is required' });
+            }
         }
 
         const newGalleryItem = new Gallery({
@@ -59,26 +83,75 @@ exports.uploadGalleryItem = async (req, res) => {
 
         res.status(201).json(savedGalleryItem);
     } catch (error) {
-        res.status(500).json({ message: 'Error uploading gallery item' });
+        console.error('Error uploading gallery item:', error);
+        res.status(500).json({ message: 'Error uploading gallery item', error: error.message });
     }
 };
 
 // Update gallery item
 exports.updateGalleryItem = async (req, res) => {
     try {
+        // Dapatkan item galeri yang akan diupdate
+        const galleryItem = await Gallery.findById(req.params.id);
+        if (!galleryItem) {
+            return res.status(404).json({ message: 'Gallery item not found' });
+        }
+
+        const updateData = { ...req.body, updatedAt: new Date() };
+        let oldMediaUrl = galleryItem.mediaUrl;
+        let oldMediaType = galleryItem.mediaType;
+
+        // Handle file upload if present
+        if (req.file) {
+            updateData.mediaUrl = req.file.path; // URL gambar dari Cloudinary
+            updateData.mediaType = 'image';
+        }
+
+        // Update gallery item
         const updatedGalleryItem = await Gallery.findByIdAndUpdate(
             req.params.id,
-            { ...req.body, updatedAt: new Date() },
+            updateData,
             { new: true, runValidators: true }
         );
 
-        if (!updatedGalleryItem) {
-            return res.status(404).json({ message: 'Gallery item not found' });
+        // Handle kost images update if media type changed or URL changed
+        if (oldMediaType === 'image' && (updateData.mediaType !== 'image' || oldMediaUrl !== updatedGalleryItem.mediaUrl)) {
+            // Remove old image from kost
+            const kost = await Kost.findById(galleryItem.kost);
+            if (kost) {
+                kost.images = kost.images.filter(img => img !== oldMediaUrl);
+                await kost.save();
+            }
+
+            // Delete old image from Cloudinary
+            if (oldMediaUrl && oldMediaUrl.includes('cloudinary')) {
+                try {
+                    // Extract public_id from Cloudinary URL
+                    const urlParts = oldMediaUrl.split('/');
+                    const publicIdWithExtension = urlParts[urlParts.length - 1];
+                    const publicId = publicIdWithExtension.split('.')[0];
+                    
+                    // Delete from Cloudinary
+                    await cloudinary.uploader.destroy(`dkost-mranggen/${publicId}`);
+                } catch (cloudinaryError) {
+                    console.error('Error deleting old image from Cloudinary:', cloudinaryError);
+                }
+            }
+        }
+
+        // Add new image to kost if new media is image
+        if (updateData.mediaType === 'image' && (oldMediaType !== 'image' || oldMediaUrl !== updatedGalleryItem.mediaUrl)) {
+            const kost = await Kost.findById(galleryItem.kost);
+            if (kost) {
+                kost.images.push(updatedGalleryItem.mediaUrl);
+                await kost.save();
+            }
         }
 
         res.status(200).json(updatedGalleryItem);
     } catch (error) {
-        res.status(500).json({ message: 'Error updating gallery item' });
+        console.error('Error updating gallery item:', error);
+        res.status(500).json({ message: 'Error updating gallery item', error: error.message });
     }
 };
 
@@ -96,6 +169,23 @@ exports.deleteGalleryItem = async (req, res) => {
             if (kost) {
                 kost.images = kost.images.filter(img => img !== galleryItem.mediaUrl);
                 await kost.save();
+            }
+            
+            // Delete image from Cloudinary if it's stored there
+            if (galleryItem.mediaUrl && galleryItem.mediaUrl.includes('cloudinary')) {
+                try {
+                    // Extract public_id from Cloudinary URL
+                    const urlParts = galleryItem.mediaUrl.split('/');
+                    const publicIdWithExtension = urlParts[urlParts.length - 1];
+                    const publicId = publicIdWithExtension.split('.')[0];
+                    
+                    // Delete from Cloudinary
+                    await cloudinary.uploader.destroy(`dkost-mranggen/${publicId}`);
+                    console.log(`Deleted image from Cloudinary: ${publicId}`);
+                } catch (cloudinaryError) {
+                    console.error('Error deleting from Cloudinary:', cloudinaryError);
+                    // Continue with deletion even if Cloudinary delete fails
+                }
             }
         }
 

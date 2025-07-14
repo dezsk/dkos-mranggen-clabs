@@ -12,6 +12,7 @@ swagger(app);
 // Middleware & Routing
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public')); // Serve static files from public folder
 
 // Auth Routes
 const authRoutes = require('./routes/authRoutes');
