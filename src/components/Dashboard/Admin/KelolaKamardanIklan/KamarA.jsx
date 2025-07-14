@@ -98,8 +98,8 @@ export default function FormKamarA({ setActivePage }) {
         form.append('title', `Foto Kamar A ${i + 1}`);
         form.append('description', `Foto Kamar A ${i + 1}`);
         form.append('kostId', kostId);
-        form.append('type', 'kost');
-        form.append('image', imageFiles[i]);
+        form.append('mediaType', 'image');
+        form.append('media', imageFiles[i]);
 
         const uploadRes = await fetch('https://dkos-mranggen-clabs-production.up.railway.app/api/admin/gallery', {
           method: 'POST',
@@ -110,7 +110,7 @@ export default function FormKamarA({ setActivePage }) {
         if (!uploadRes.ok) return alert(`Gagal mengunggah gambar ke-${i + 1}`);
 
         const uploadResult = await uploadRes.json();
-        uploadedImageUrls.push(uploadResult.gallery.imageUrl);
+        uploadedImageUrls.push(uploadResult.mediaUrl);
       }
 
       const updateResponse = await fetch(`https://dkos-mranggen-clabs-production.up.railway.app/api/admin/kosts/${kostId}`, {
