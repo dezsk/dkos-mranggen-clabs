@@ -92,31 +92,33 @@ const KelolaKamardanIklan = ({ setActivePage }) => {
       <h1 className="text-xl font-semibold mt-10 text-black flex items-center gap-2">Iklan Aktif</h1>
       <div className="flex gap-6">
         <div className="Iklan Kamar A flex flex-col items-center">
-          <button
+          <p className="text-xl text-gray-500 mt-2 text-center w-full">Iklan Kamar A</p>
+          <div
             className="border-2 rounded-md w-80 h-80 bg-cover bg-center"
             style={{
               backgroundImage: kamarAImage ? `url(${kamarAImage})` : 'linear-gradient(#50A75F, #50A75F)',
             }}
           >
             {!kamarAImage && <h1 className="text-xl font-bold text-white">A</h1>}
-          </button>
-          <p className="text-xl text-gray-500 mt-2 text-center w-full">Iklan Kamar A</p>
+          </div>
           <p className="text-gray-600">Jumlah Kamar: {kamarAInfo.availableRooms}</p>
           <p className="text-gray-600">Harga: Rp {kamarAInfo.price.toLocaleString()}</p>
+          <button className="mt-4 bg-[#50A75F] text-white px-4 py-2 rounded hover:bg-[#3c8a4b]">Cek Detail Kamar A</button>
         </div>
 
         <div className="Iklan Kamar B flex flex-col items-center">
-          <button
+          <p className="text-xl text-gray-500 mt-2 text-center w-full">Iklan Kamar B</p>
+          <div
             className="border-2 rounded-md w-80 h-80 bg-cover bg-center"
             style={{
               backgroundImage: kamarBImage ? `url(${kamarBImage})` : 'linear-gradient(#50A75F, #50A75F)',
             }}
           >
             {!kamarBImage && <h1 className="text-xl font-bold text-white">B</h1>}
-          </button>
-          <p className="text-xl text-gray-500 mt-2 text-center w-full">Iklan Kamar B</p>
+          </div>
           <p className="text-gray-600">Jumlah Kamar: {kamarBInfo.availableRooms}</p>
           <p className="text-gray-600">Harga: Rp {kamarBInfo.price.toLocaleString()}</p>
+          <button className="mt-4 bg-[#50A75F] text-white px-4 py-2 rounded hover:bg-[#3c8a4b]">Cek Detail Kamar B</button>
         </div>
       </div>
     </div>
