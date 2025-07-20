@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { FaArrowLeft, FaEye, FaEyeSlash } from 'react-icons/fa';
-import AlertUbahPasswordUser from '../../../Alert/AlertUbahPasswordUser'
+import AlertUbahPasswordUser from '../../../Alert/AlertUbahPasswordUser';
 
-const GantiPassword = ({setActivePage}) => {
-
+const GantiPassword = ({ setActivePage }) => {
   const [passwordLama, setPasswordLama] = useState('');
   const [passwordBaru, setPasswordBaru] = useState('');
   const [ulangPasswordBaru, setUlangPasswordBaru] = useState('');
@@ -21,24 +20,69 @@ const GantiPassword = ({setActivePage}) => {
   };
 
   const handleBack = () => {
-    setActivePage('Pengaturan')
+    setActivePage('Pengaturan');
   };
 
-  const [showAlert, setShowAlert] = React.useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  if (passwordBaru !== ulangPasswordBaru) {
+    alert("Password baru dan konfirmasi tidak cocok!");
+    return;
+  }
+
+  if (passwordBaru.length < 6) {
+    alert("Password baru minimal 6 karakter!");
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch('https://dkos-mranggen-clabs-production.up.railway.app/api/user/profile/password', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        currentPassword: passwordLama,
+        newPassword: passwordBaru
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Gagal:", data);
+      alert(data.message || 'Gagal mengubah password.');
+      return;
+    }
+
     setShowAlert(true);
-  };
+
+    // Reset form
+    setPasswordLama('');
+    setPasswordBaru('');
+    setUlangPasswordBaru('');
+
+  } catch (error) {
+    console.error("Terjadi kesalahan:", error);
+    alert("Terjadi kesalahan saat mengubah password.");
+  }
+};
 
 
-return (
+  return (
     <div className='max-w-xl'>
-        <div className="flex items-center gap-2 mb-4 text-[#989898]">
-            <button onClick={handleBack} className="text-xl">
-              <FaArrowLeft />
-            </button>
-            kembali
-        </div>
+      <div className="flex items-center gap-2 mb-4 text-[#989898]">
+        <button onClick={handleBack} className="text-xl">
+          <FaArrowLeft />
+        </button>
+        kembali
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Password Lama */}
@@ -113,11 +157,16 @@ return (
         >
           Simpan
         </button>
-        {showAlert && (<AlertUbahPasswordUser onClose={() => setShowAlert(false)}setActivePage={setActivePage}/>
-    )}
+
+        {showAlert && (
+          <AlertUbahPasswordUser
+            onClose={() => setShowAlert(false)}
+            setActivePage={setActivePage}
+          />
+        )}
       </form>
     </div>
-    );
+  );
 };
 
 export default GantiPassword;

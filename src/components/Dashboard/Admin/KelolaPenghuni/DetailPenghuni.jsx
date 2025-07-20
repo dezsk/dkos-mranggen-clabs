@@ -1,12 +1,43 @@
 import React, { useState } from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 
-const DetailPenghuni = ({setActivePage}) => {
+const DetailPenghuni = ({ setActivePage }) => {
   const [tab, setTab] = useState('kirim');
+  const [paymentId] = useState('123456'); // Ganti dengan ID pembayaran asli dari props atau data API
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleBack = () => {
-    setActivePage('KelolaPenghuni')
-  }
+    setActivePage('KelolaPenghuni');
+  };
+
+  const handleVerifikasiPembayaran = async () => {
+    if (!paymentId) return alert('ID pembayaran tidak tersedia');
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`https://dkos-mranggen-clabs-production.up.railway.app/api/admin/payments/${paymentId}/verify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // Tambahkan Authorization jika perlu
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Pembayaran berhasil diverifikasi!');
+        // Perbarui status atau navigasi ulang jika perlu
+      } else {
+        alert(`Gagal verifikasi: ${data.message || 'Terjadi kesalahan'}`);
+      }
+    } catch (error) {
+      alert('Terjadi kesalahan koneksi ke server');
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="p-4 max-w-xl bg-white rounded shadow-md text-sm text-gray-800">

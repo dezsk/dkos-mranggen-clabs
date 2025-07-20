@@ -26,7 +26,8 @@ const PageDashboardUser = () => {
         return <FormBayarKos setActivePage={setActivePage} />;
       case 'GantiPassword':
         return <GantiPassword setActivePage={setActivePage} />;
-
+      default:
+        return <KamarSaya />; // fallback untuk safety
 
     }
   };
