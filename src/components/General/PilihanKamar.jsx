@@ -1,6 +1,4 @@
 import React, { forwardRef, useEffect, useState } from 'react';
-import kamarA from '../../assets/LandingPage/kamarA.svg';
-import kamarB from '../../assets/LandingPage/kamarB.svg';
 import { useNavigate } from 'react-router-dom';
 
 const PilihanKamar = forwardRef ((props, ref) => {
@@ -8,13 +6,29 @@ const PilihanKamar = forwardRef ((props, ref) => {
     //{ name: 'Kamar Tipe A', desc: 'Luas, ventilasi baik...', price: 'Rp 1.000.000/bulan', img: kamarA },
     //{ name: 'Kamar Tipe B', desc: 'Nyaman & hemat...', price: 'Rp 900.000/bulan', img: kamarB }
   //];
-
+  const [kamarAImage, setKamarAImage] = useState('');
+  const [kamarBImage, setKamarBImage] = useState('');
   const [kamarAInfo, setKamarAInfo] = useState({ price: 0, availableRooms: 0 });
   const [kamarBInfo, setKamarBInfo] = useState({ price: 0, availableRooms: 0 });
 
   useEffect(() => {
 
     const token = localStorage.getItem('token');
+
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch('https://dkos-mranggen-clabs-production.up.railway.app/api/admin/gallery', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        const kamarA = data.find((img) => img.title.includes('Kamar A'));
+        const kamarB = data.find((img) => img.title.includes('Kamar B'));
+        setKamarAImage(kamarA?.mediaUrl || '');
+        setKamarBImage(kamarB?.mediaUrl || '');
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
     const fetchKosts = async () => {
       try {
@@ -46,6 +60,7 @@ const PilihanKamar = forwardRef ((props, ref) => {
       }
     };
 
+    fetchGallery();
     fetchKosts();
 
   }, []);
@@ -63,8 +78,15 @@ const PilihanKamar = forwardRef ((props, ref) => {
       <h2 className="text-2xl font-bold mb-6 text-center">Pilihan Kamar D'Kost Mranggen</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
         <div className="bg-gray-100 rounded-lg overflow-hidden shadow">
-          <img src={kamarA} alt="Kamar Tipe A" className="w-full h-48 object-cover" />
           <div className="p-4">
+            <div
+              className="border-2 rounded-md w-80 h-80 bg-cover bg-center"
+              style={{
+                backgroundImage: kamarAImage ? `url(${kamarAImage})` : 'linear-gradient(#50A75F, #50A75F)',
+              }}
+            >
+              {!kamarAImage && <h1 className="text-xl font-bold text-white"></h1>}
+          </div>
           <p className="text-gray-600">Jumlah Kamar: {kamarAInfo.availableRooms}</p>
           <p className="text-gray-600">Harga: Rp {kamarAInfo.price.toLocaleString()}</p>
             <button
@@ -76,8 +98,15 @@ const PilihanKamar = forwardRef ((props, ref) => {
           </div>
         </div>
         <div className="bg-gray-100 rounded-lg overflow-hidden shadow">
-          <img src={kamarB} alt="Kamar Tipe B" className="w-full h-48 object-cover" />
           <div className="p-4">
+            <div
+              className="border-2 rounded-md w-80 h-80 bg-cover bg-center"
+              style={{
+                backgroundImage: kamarBImage ? `url(${kamarBImage})` : 'linear-gradient(#50A75F, #50A75F)',
+              }}
+            >
+              {!kamarBImage && <h1 className="text-xl font-bold text-white"></h1>}
+          </div>
           <p className="text-gray-600">Jumlah Kamar: {kamarBInfo.availableRooms}</p>
           <p className="text-gray-600">Harga: Rp {kamarBInfo.price.toLocaleString()}</p>
             <button

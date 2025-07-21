@@ -4,7 +4,6 @@ import {FaUserCircle, FaBell} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const HeaderHome = () => {
-    const username = localStorage.getItem('username') || 'Muhammad Umar Hatta';
     const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -35,10 +34,6 @@ const HeaderHome = () => {
   return (
     <header className="bg-[#50A75F] text-white px-8 py-4 flex justify-between items-center">
       <img src={logo} alt="Logo" className="w-36" />
-
-      <div className="flex-1 flex justify-center">
-        <span className="text-lg font-bold">{username}</span>
-      </div>
 
       <div className="space-x-4 flex items-center">
         <div className="relative" ref={dropdownRef}>
