@@ -94,12 +94,12 @@ const KelolaKamardanIklan = ({ setActivePage }) => {
         <div className="Iklan Kamar A flex flex-col items-center">
           <p className="text-xl text-gray-500 mt-2 text-center w-full">Iklan Kamar A</p>
           <div
-            className="border-2 rounded-md w-80 h-80 bg-cover bg-center"
-            style={{
-              backgroundImage: kamarAImage ? `url(${kamarAImage})` : 'linear-gradient(#50A75F, #50A75F)',
-            }}
-          >
-            {!kamarAImage && <h1 className="text-xl font-bold text-white">A</h1>}
+              className="border-2 rounded-md w-80 h-80 bg-cover bg-center"
+              style={{
+                backgroundImage: kamarAImage ? `url(${kamarAImage})` : 'linear-gradient(#50A75F, #50A75F)',
+              }}
+            >
+              {!kamarAImage && <h1 className="text-xl font-bold text-white"></h1>}
           </div>
           <p className="text-gray-600">Jumlah Kamar: {kamarAInfo.availableRooms}</p>
           <p className="text-gray-600">Harga: Rp {kamarAInfo.price.toLocaleString()}</p>
@@ -114,7 +114,7 @@ const KelolaKamardanIklan = ({ setActivePage }) => {
               backgroundImage: kamarBImage ? `url(${kamarBImage})` : 'linear-gradient(#50A75F, #50A75F)',
             }}
           >
-            {!kamarBImage && <h1 className="text-xl font-bold text-white">B</h1>}
+            {!kamarBImage && <h1 className="text-xl font-bold text-white center"></h1>}
           </div>
           <p className="text-gray-600">Jumlah Kamar: {kamarBInfo.availableRooms}</p>
           <p className="text-gray-600">Harga: Rp {kamarBInfo.price.toLocaleString()}</p>

@@ -1,13 +1,54 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import kamarA from '../../assets/LandingPage/kamarA.svg';
 import kamarB from '../../assets/LandingPage/kamarB.svg';
 import { useNavigate } from 'react-router-dom';
 
 const PilihanKamar = forwardRef ((props, ref) => {
-  const kamar = [
-    { name: 'Kamar Tipe A', desc: 'Luas, ventilasi baik...', price: 'Rp 1.000.000/bulan', img: kamarA },
-    { name: 'Kamar Tipe B', desc: 'Nyaman & hemat...', price: 'Rp 900.000/bulan', img: kamarB }
-  ];
+  //const kamar = [
+    //{ name: 'Kamar Tipe A', desc: 'Luas, ventilasi baik...', price: 'Rp 1.000.000/bulan', img: kamarA },
+    //{ name: 'Kamar Tipe B', desc: 'Nyaman & hemat...', price: 'Rp 900.000/bulan', img: kamarB }
+  //];
+
+  const [kamarAInfo, setKamarAInfo] = useState({ price: 0, availableRooms: 0 });
+  const [kamarBInfo, setKamarBInfo] = useState({ price: 0, availableRooms: 0 });
+
+  useEffect(() => {
+
+    const token = localStorage.getItem('token');
+
+    const fetchKosts = async () => {
+      try {
+        const res = await fetch('https://dkos-mranggen-clabs-production.up.railway.app/api/admin/kosts', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        console.log('DATA', data);
+
+        if (data) {
+            const kamarA = data.find((kost) => kost.roomType === 'A');
+            const kamarB = data.find((kost) => kost.roomType === 'B');
+
+            if (kamarA) {
+                setKamarAInfo({
+                    price: kamarA.price, 
+                    availableRooms: kamarA.availableRooms
+                });
+                
+            } if (kamarB) {
+                setKamarBInfo({
+                    price: kamarB.price, 
+                    availableRooms: kamarB.availableRooms
+                });
+            }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchKosts();
+
+  }, []);
 
   const navigate = useNavigate();
   const handleSewaA = () => {
@@ -24,9 +65,8 @@ const PilihanKamar = forwardRef ((props, ref) => {
         <div className="bg-gray-100 rounded-lg overflow-hidden shadow">
           <img src={kamarA} alt="Kamar Tipe A" className="w-full h-48 object-cover" />
           <div className="p-4">
-            <h3 className="text-lg font-semibold">{kamar[0].name}</h3>
-            <p className="text-sm text-gray-600">{kamar[0].desc}</p>
-            <p className="font-bold mt-2">{kamar[0].price}</p>
+          <p className="text-gray-600">Jumlah Kamar: {kamarAInfo.availableRooms}</p>
+          <p className="text-gray-600">Harga: Rp {kamarAInfo.price.toLocaleString()}</p>
             <button
               onClick={handleSewaA}
               className="mt-4 bg-[#50A75F] text-white px-4 py-2 rounded hover:bg-[#3c8a4b]"
@@ -38,9 +78,8 @@ const PilihanKamar = forwardRef ((props, ref) => {
         <div className="bg-gray-100 rounded-lg overflow-hidden shadow">
           <img src={kamarB} alt="Kamar Tipe B" className="w-full h-48 object-cover" />
           <div className="p-4">
-            <h3 className="text-lg font-semibold">{kamar[1].name}</h3>
-            <p className="text-sm text-gray-600">{kamar[1].desc}</p>
-            <p className="font-bold mt-2">{kamar[1].price}</p>
+          <p className="text-gray-600">Jumlah Kamar: {kamarBInfo.availableRooms}</p>
+          <p className="text-gray-600">Harga: Rp {kamarBInfo.price.toLocaleString()}</p>
             <button
               onClick={handleSewaB}
               className="mt-4 bg-[#50A75F] text-white px-4 py-2 rounded hover:bg-[#3c8a4b]"
