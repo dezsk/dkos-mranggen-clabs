@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '../components/Home/HeaderHome';
 import Gallery from '../components/Room/GalleryKamarB';
 import DeskripsiKamarB from '../components/Room/DeskripsiKamarB'; 
-import FasilitasKamarA from '../components/Room/FasilitasKamarA';
+import FasilitasKamarB from '../components/Room/FasilitasKamarB';
 import TempatTerdekat from '../components/Room/TempatTerdekat'; 
 import FormSewa from '../components/Room/FormSewaKamar';
 
@@ -19,7 +19,7 @@ const DetailRoomB = () => {
           <FormSewa/>
         </div>
       </div>
-      <FasilitasKamarA/>
+      <FasilitasKamarB/>
       <TempatTerdekat/>
     </div>
   );

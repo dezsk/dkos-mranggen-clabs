@@ -11,7 +11,6 @@ const DetailRoomA = () => {
     <div className="HomePage">
       <Header/>
       <Gallery/>
-      {/* Deskripsi & Form Sewa */}
       <div className="max-w-6xl mx-auto px-4 mt-6 flex flex-col lg:flex-row gap-8">
         <div className="flex-1">
           <DeskripsiKamarA/>
