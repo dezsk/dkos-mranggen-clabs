@@ -17,7 +17,7 @@ const PilihanKamar = forwardRef ((props, ref) => {
 
     const fetchGallery = async () => {
       try {
-        const res = await fetch('https://dkos-mranggen-clabs-production.up.railway.app/api/admin/gallery', {
+        const res = await fetch('https://dkos-mranggen-clabs-production.up.railway.app/api/user/kost', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -32,7 +32,7 @@ const PilihanKamar = forwardRef ((props, ref) => {
 
     const fetchKosts = async () => {
       try {
-        const res = await fetch('https://dkos-mranggen-clabs-production.up.railway.app/api/admin/kosts', {
+        const res = await fetch('https://dkos-mranggen-clabs-production.up.railway.app/api/user/kost', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -43,17 +43,19 @@ const PilihanKamar = forwardRef ((props, ref) => {
             const kamarB = data.find((kost) => kost.roomType === 'B');
 
             if (kamarA) {
-                setKamarAInfo({
-                    price: kamarA.price, 
-                    availableRooms: kamarA.availableRooms
-                });
-                
-            } if (kamarB) {
-                setKamarBInfo({
-                    price: kamarB.price, 
-                    availableRooms: kamarB.availableRooms
-                });
-            }
+            setKamarAImage(kamarA.images[0] || '');
+            setKamarAInfo({
+              price: kamarA.price,
+              availableRooms: kamarA.availableRooms,
+            });
+          }
+          if (kamarB) {
+            setKamarBImage(kamarB.images[0] || '');
+            setKamarBInfo({
+              price: kamarB.price,
+              availableRooms: kamarB.availableRooms,
+            });
+          }
         }
       } catch (error) {
         console.error(error);

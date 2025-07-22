@@ -1,6 +1,6 @@
 import React from 'react';
 import Header from '../components/Home/HeaderHome';
-import Gallery from '../components/Room/GalleryKamarA';
+import Gallery from '../components/Room/GalleryKamarB';
 import DeskripsiKamarB from '../components/Room/DeskripsiKamarB'; 
 import FasilitasKamarA from '../components/Room/FasilitasKamarA';
 import TempatTerdekat from '../components/Room/TempatTerdekat'; 

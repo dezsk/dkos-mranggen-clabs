@@ -10,7 +10,7 @@ export default function GalleryKamarB() {
     })
       .then((res) => res.json())
       .then((data) => {
-        const kamarB = data.find((kost) => kost.roomType === "A");
+        const kamarB = data.find((kost) => kost.roomType === "B");
         setImage(kamarB?.images[0] || "");
       })
       .catch((error) => {
@@ -20,7 +20,7 @@ export default function GalleryKamarB() {
 
   return (
     <div className="flex flex-col items-center">
-      <h2 className="text-2xl font-bold mb-4">Gallery Kamar A</h2>
+      <h2 className="text-2xl font-bold mb-4">Gallery Kamar B</h2>
       {image ? (
         <div className="w-96 h-96 rounded overflow-hidden border">
           <img src={image} alt="Kamar B" className="w-full h-full object-cover" />
