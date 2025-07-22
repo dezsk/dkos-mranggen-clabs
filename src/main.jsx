@@ -21,18 +21,18 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/HomePage" element={<HomePage />}/>
-        <Route path="/PilihanKamar" element={<Kamar />} />
-        <Route path="/DetailRoomA" element={<DetailRoomA />} />
-        <Route path="/DetailRoomB" element={<DetailRoomB />} />
-        <Route path="/PageFormSewaKamar" element={<Form />} />
-        <Route path="/PagePembayaran" element={<PagePembayaran />} />
-        <Route path="/PageDashboardAdmin" element={<PageDashboardAdmin/>} />
-        <Route path="/PageDashboardUser" element={<PageDashboardUser/>} />
-        <Route path="/KamarA" element={<KelolaKamarA/>} />
-        <Route path="/KamarB" element={<KelolaKamarB/>} />
+        <Route path="/" element={<LandingPage/>}/>
+        <Route path="/register" element={<RegisterPage/>}/>
+        <Route path="/HomePage" element={<HomePage/>}/>
+        <Route path="/PilihanKamar" element={<Kamar/>}/>
+        <Route path="/DetailRoomA" element={<DetailRoomA/>}/>
+        <Route path="/DetailRoomB" element={<DetailRoomB/>}/>
+        <Route path="/PageFormSewaKamar" element={<Form/>}/>
+        <Route path="/PagePembayaran" element={<PagePembayaran/>}/>
+        <Route path="/PageDashboardAdmin" element={<PageDashboardAdmin/>}/>
+        <Route path="/PageDashboardUser" element={<PageDashboardUser/>}/>
+        <Route path="/KamarA" element={<KelolaKamarA/>}/>
+        <Route path="/KamarB" element={<KelolaKamarB/>}/>
         <Route path='/FormBayarKos' element={<FormBayarKos/>}/>
         {/* Tambahkan rute lain sesuai kebutuhan */}
 

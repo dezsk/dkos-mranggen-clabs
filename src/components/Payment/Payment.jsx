@@ -9,10 +9,16 @@ export default function FormSewa() {
         setShowAlert(true);
     };
 
+    const handleBackButtonClick = () => {
+        window.history.back();
+    };
+
   return (
     <div className="max-w-screen-xl mx-auto mt-8 p-6 bg-white shadow rounded">
       <div className="flex items-center gap-2 mb-4 text-[#989898]">
-      <button  className="text-xl"><FaBackward/> </button>
+      <button  
+      onClick={handleBackButtonClick}
+      className="text-xl"><FaBackward/> </button>
       kembali
       </div>
       <h1 className="text-xl font-semibold mb-4 text-black flex items-center gap-2">
