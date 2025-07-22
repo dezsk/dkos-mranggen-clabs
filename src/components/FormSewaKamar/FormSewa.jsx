@@ -102,7 +102,7 @@ export default function FormSewa() {
 
         <button
           onClick={onClickBayarSewa}
-          type="button"
+          
           className="w-1/2 mx-auto mt-10 py-2 rounded font-semibold flex justify-center items-center gap-2 transition-colors bg-[#50A75F] text-white hover:bg-[#3c8a4b]"
           >
           Ajukan Sewa
