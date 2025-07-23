@@ -4,7 +4,7 @@ import Gallery from '../components/Room/GalleryKamarB';
 import DeskripsiKamarB from '../components/Room/DeskripsiKamarB'; 
 import FasilitasKamarB from '../components/Room/FasilitasKamarB';
 import TempatTerdekat from '../components/Room/TempatTerdekat'; 
-import FormSewa from '../components/Room/FormSewaKamar';
+import FormSewaB from '../components/Room/FormSewaKamarB';
 
 const DetailRoomB = () => {
   return (
@@ -16,7 +16,7 @@ const DetailRoomB = () => {
           <DeskripsiKamarB/>
         </div>
         <div className="flex-1">
-          <FormSewa/>
+          <FormSewaB/>
         </div>
       </div>
       <FasilitasKamarB/>

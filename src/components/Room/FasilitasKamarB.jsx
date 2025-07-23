@@ -25,8 +25,8 @@ const FasilitasKamarB = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        const kamarA = data.find((kost) => kost.roomType === "B");
-        setFasilitas(kamarA?.facilities || []);
+        const kamarB = data.find((kost) => kost.roomType === "B");
+        setFasilitas(kamarB?.facilities || []);
       })
       .catch((error) => {
         console.error("Gagal ambil data fasilitas:", error);
