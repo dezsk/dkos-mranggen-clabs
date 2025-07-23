@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaBolt,FaTint,FaWifi,FaBed, FaArchive,FaDoorClosed,FaChair, FaFan, FaShower, FaToilet, FaQuestion } from 'react-icons/fa';
+import { FaBolt,FaTint,FaWifi,FaBed, FaArchive,FaDoorClosed,FaChair, FaFan, FaShower, FaToilet, FaQuestion, FaBath } from 'react-icons/fa';
 
 const FasilitasKamarB = () => {
   const [fasilitas, setFasilitas] = useState([]);
@@ -14,7 +14,8 @@ const FasilitasKamarB = () => {
     'Pintu kamar': <FaDoorClosed />,
     'Kipas angin': <FaFan />,
     'Kamar Mandi Dalam': <FaShower />,
-    'Toilet Duduk': <FaToilet />,
+    'Ember dan Gayung': <FaBath />,
+    'Toilet Jongkok': <FaToilet />,
   };
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const FasilitasKamarB = () => {
   return (
     <div className='max-w-6xl mx-auto px-4 mt-6 flex flex-col lg:flex-row gap-8'>
       <div className='mb-6'>
-        <h3 className='text-lg font-semibold mb-2'>Fasilitas Kamar Tipe A</h3>
+        <h3 className='text-lg font-semibold mb-2'>Fasilitas Kamar Tipe B</h3>
         <ul className='space-y-2 text-gray-700'>
           {fasilitas.map((item, idx) => (
             <li key={idx} className='flex items-center gap-2'>

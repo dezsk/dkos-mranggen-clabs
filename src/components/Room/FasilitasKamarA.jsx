@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaBolt,FaTint,FaWifi,FaBed, FaArchive,FaDoorClosed,FaChair, FaFan, FaShower, FaToilet, FaQuestion } from 'react-icons/fa';
+import { FaBolt,FaTint,FaWifi,FaBed, FaArchive,FaDoorClosed,FaChair, FaFan, FaShower, FaToilet, FaQuestion, FaBath } from 'react-icons/fa';
 
 const FasilitasKamarA = () => {
   const [fasilitas, setFasilitas] = useState([]);
@@ -14,6 +14,7 @@ const FasilitasKamarA = () => {
     'Pintu kamar': <FaDoorClosed />,
     'Kipas angin': <FaFan />,
     'Kamar Mandi Dalam': <FaShower />,
+    'Ember dan Gayung': <FaBath />,
     'Toilet Duduk': <FaToilet />,
   };
 
