@@ -8,7 +8,6 @@ const HeaderHome = () => {
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
 
-  // Tutup dropdown jika klik di luar
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -24,6 +23,10 @@ const HeaderHome = () => {
     navigate('/PageDashboardUser');
   };
 
+  const backHome = () => {
+    navigate('/HomePage');
+  };
+
   const handleLogout = () => {
     localStorage.clear();
     setDropdownOpen(false);
@@ -33,7 +36,7 @@ const HeaderHome = () => {
 
   return (
     <header className="bg-[#50A75F] text-white px-8 py-4 flex justify-between items-center">
-      <img src={logo} alt="Logo" className="w-36" />
+      <img src={logo} alt="Logo" className="w-36" onClick={backHome}/>
 
       <div className="space-x-4 flex items-center">
         <div className="relative" ref={dropdownRef}>
