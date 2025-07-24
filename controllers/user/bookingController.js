@@ -6,11 +6,11 @@ const Kost = require('../../models/Kost');
 exports.getUserBookings = async (req, res) => {
     try {
         const bookings = await Booking.find({ user: req.user.id })
-            .populate('kost', 'name roomType price')
+            .populate('kost', 'name roomType price address facilities images availableRooms status rules')
             .sort({ createdAt: -1 });
-        res.status(200).json(bookings);
+        res.status(200).json({ success: true, data: bookings });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching bookings' });
+        res.status(500).json({ success: false, message: 'Error fetching bookings' });
     }
 };
 
@@ -20,10 +20,10 @@ exports.getBookingDetail = async (req, res) => {
         const booking = await Booking.findOne({
             _id: req.params.bookingId,
             user: req.user.id
-        }).populate('kost', 'name roomType price address facilities');
+        }).populate('kost', 'name roomType price address facilities images availableRooms status rules');
 
         if (!booking) {
-            return res.status(404).json({ message: 'Booking not found' });
+            return res.status(404).json({ success: false, message: 'Booking not found' });
         }
 
         // Get associated payments
@@ -33,12 +33,9 @@ exports.getBookingDetail = async (req, res) => {
             booking: booking._id
         }).sort({ createdAt: -1 });
 
-        res.status(200).json({
-            booking,
-            payments
-        });
+        res.status(200).json({ success: true, data: { booking, payments } });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching booking detail' });
+        res.status(500).json({ success: false, message: 'Error fetching booking detail' });
     }
 };
 
@@ -50,10 +47,10 @@ exports.createBooking = async (req, res) => {
         // Check kost availability
         const kost = await Kost.findById(kostId);
         if (!kost) {
-            return res.status(404).json({ message: 'Kost not found' });
+            return res.status(404).json({ success: false, message: 'Kost not found' });
         }
         if (kost.availableRooms === 0) {
-            return res.status(400).json({ message: 'No rooms available' });
+            return res.status(400).json({ success: false, message: 'No rooms available' });
         }
 
         // Calculate end date and total price
@@ -89,12 +86,9 @@ exports.createBooking = async (req, res) => {
 
         await payment.save();
 
-        res.status(201).json({
-            booking: savedBooking,
-            payment
-        });
+        res.status(201).json({ success: true, data: { booking: savedBooking, payment }, message: 'Booking created successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error creating booking' });
+        res.status(500).json({ success: false, message: 'Error creating booking' });
     }
 };
 
@@ -102,7 +96,7 @@ exports.createBooking = async (req, res) => {
 exports.submitPaymentProof = async (req, res) => {
     try {
         const { paymentId } = req.params;
-        const { paymentProof, paymentMethod } = req.body;
+        const { paymentMethod } = req.body;
 
         const payment = await Payment.findOne({
             _id: paymentId,
@@ -111,19 +105,24 @@ exports.submitPaymentProof = async (req, res) => {
         });
 
         if (!payment) {
-            return res.status(404).json({ message: 'Payment not found or already processed' });
+            return res.status(404).json({ success: false, message: 'Payment not found or already processed' });
         }
 
-        payment.paymentProof = paymentProof;
+        // Ambil URL file dari req.file (hasil upload cloudinary)
+        if (req.file && req.file.path) {
+            payment.paymentProof = req.file.path;
+        } else {
+            return res.status(400).json({ success: false, message: 'No payment proof file uploaded' });
+        }
         payment.paymentMethod = paymentMethod;
         payment.paymentDate = new Date();
         payment.status = 'waiting_confirmation';
 
         const updatedPayment = await payment.save();
 
-        res.status(200).json(updatedPayment);
+        res.status(200).json({ success: true, data: updatedPayment, message: 'Payment proof submitted' });
     } catch (error) {
-        res.status(500).json({ message: 'Error submitting payment proof' });
+        res.status(500).json({ success: false, message: 'Error submitting payment proof' });
     }
 };
 
@@ -140,7 +139,7 @@ exports.requestExtension = async (req, res) => {
         }).populate('kost', 'price');
 
         if (!booking) {
-            return res.status(404).json({ message: 'Active booking not found' });
+            return res.status(404).json({ success: false, message: 'Active booking not found' });
         }
 
         // Calculate extension price
@@ -160,9 +159,9 @@ exports.requestExtension = async (req, res) => {
 
         await payment.save();
 
-        res.status(200).json(payment);
+        res.status(200).json({ success: true, data: payment, message: 'Extension requested' });
     } catch (error) {
-        res.status(500).json({ message: 'Error requesting extension' });
+        res.status(500).json({ success: false, message: 'Error requesting extension' });
     }
 };
 
@@ -175,8 +174,8 @@ exports.getActiveBookings = async (req, res) => {
             endDate: { $gt: new Date() }
         }).populate('kost', 'name roomType price');
 
-        res.status(200).json(activeBookings);
+        res.status(200).json({ success: true, data: activeBookings });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching active bookings' });
+        res.status(500).json({ success: false, message: 'Error fetching active bookings' });
     }
 };

@@ -8,9 +8,9 @@ exports.getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id)
             .select('-password');
-        res.status(200).json(user);
+        res.status(200).json({ success: true, data: user });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching user profile' });
+        res.status(500).json({ success: false, message: 'Error fetching user profile' });
     }
 };
 
@@ -32,9 +32,9 @@ exports.updateProfile = async (req, res) => {
             { new: true, runValidators: true }
         ).select('-password');
 
-        res.status(200).json(updatedUser);
+        res.status(200).json({ success: true, data: updatedUser });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating profile' });
+        res.status(500).json({ success: false, message: 'Error updating profile' });
     }
 };
 
@@ -47,7 +47,7 @@ exports.changePassword = async (req, res) => {
         const validPassword = await bcrypt.compare(currentPassword, user.password);
 
         if (!validPassword) {
-            return res.status(400).json({ message: 'Current password is incorrect' });
+            return res.status(400).json({ success: false, message: 'Current password is incorrect' });
         }
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
@@ -55,9 +55,9 @@ exports.changePassword = async (req, res) => {
         user.updatedAt = new Date();
         await user.save();
 
-        res.status(200).json({ message: 'Password updated successfully' });
+        res.status(200).json({ success: true, message: 'Password updated successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error changing password' });
+        res.status(500).json({ success: false, message: 'Error changing password' });
     }
 };
 
@@ -75,9 +75,9 @@ exports.updateProfilePicture = async (req, res) => {
             { new: true }
         ).select('-password');
 
-        res.status(200).json(user);
+        res.status(200).json({ success: true, data: user });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating profile picture' });
+        res.status(500).json({ success: false, message: 'Error updating profile picture' });
     }
 };
 
@@ -115,17 +115,20 @@ exports.getDashboardSummary = async (req, res) => {
         const totalBookings = await Booking.countDocuments({ user: req.user.id });
 
         res.status(200).json({
-            activeBookings,
-            paymentStats: {
-                totalPayments,
-                pendingPayments,
-                waitingConfirmation
-            },
-            upcomingPayment,
-            totalBookings
+            success: true,
+            data: {
+                activeBookings,
+                paymentStats: {
+                    totalPayments,
+                    pendingPayments,
+                    waitingConfirmation
+                },
+                upcomingPayment,
+                totalBookings
+            }
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching dashboard summary' });
+        res.status(500).json({ success: false, message: 'Error fetching dashboard summary' });
     }
 };
 
@@ -141,6 +144,7 @@ exports.deactivateAccount = async (req, res) => {
 
         if (activeBooking) {
             return res.status(400).json({
+                success: false,
                 message: 'Cannot deactivate account with active booking'
             });
         }
@@ -153,6 +157,7 @@ exports.deactivateAccount = async (req, res) => {
 
         if (pendingPayments) {
             return res.status(400).json({
+                success: false,
                 message: 'Cannot deactivate account with pending payments'
             });
         }
@@ -166,8 +171,8 @@ exports.deactivateAccount = async (req, res) => {
             { new: true }
         );
 
-        res.status(200).json({ message: 'Account deactivated successfully' });
+        res.status(200).json({ success: true, message: 'Account deactivated successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deactivating account' });
+        res.status(500).json({ success: false, message: 'Error deactivating account' });
     }
 };

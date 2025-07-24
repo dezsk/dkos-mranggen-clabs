@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { verifyToken } = require('../../middleware/auth');
 const bookingController = require('../../controllers/user/bookingController');
+const { uploadImage } = require('../../config/cloudinary');
 
 // Protect all routes
 router.use(verifyToken);
@@ -392,7 +393,7 @@ router.post('/', bookingController.createBooking);
  *       500:
  *         description: Server error
  */
-router.post('/payments/:paymentId/proof', bookingController.submitPaymentProof);
+router.post('/payments/:paymentId/proof', uploadImage.single('proof'), bookingController.submitPaymentProof);
 /**
  * @swagger
  * /api/bookings/{bookingId}/extend:

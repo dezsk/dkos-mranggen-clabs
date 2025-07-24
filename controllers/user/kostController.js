@@ -4,9 +4,9 @@ const Kost = require('../../models/Kost');
 exports.getAllKost = async (req, res) => {
     try {
         const kosts = await Kost.find();
-        res.status(200).json(kosts);
+        res.status(200).json({ success: true, data: kosts });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching kost data' });
+        res.status(500).json({ success: false, message: 'Error fetching kost data' });
     }
 };
 
@@ -14,9 +14,9 @@ exports.getAllKost = async (req, res) => {
 exports.getKostById = async (req, res) => {
     try {
         const kost = await Kost.findById(req.params.id);
-        if (!kost) return res.status(404).json({ message: 'Kost not found' });
-        res.status(200).json(kost);
+        if (!kost) return res.status(404).json({ success: false, message: 'Kost not found' });
+        res.status(200).json({ success: true, data: kost });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching kost data' });
+        res.status(500).json({ success: false, message: 'Error fetching kost data' });
     }
 };
