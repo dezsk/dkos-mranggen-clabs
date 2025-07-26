@@ -2,10 +2,6 @@ import React, { forwardRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const PilihanKamar = forwardRef ((props, ref) => {
-  //const kamar = [
-    //{ name: 'Kamar Tipe A', desc: 'Luas, ventilasi baik...', price: 'Rp 1.000.000/bulan', img: kamarA },
-    //{ name: 'Kamar Tipe B', desc: 'Nyaman & hemat...', price: 'Rp 900.000/bulan', img: kamarB }
-  //];
   const [kamarAImage, setKamarAImage] = useState('');
   const [kamarBImage, setKamarBImage] = useState('');
   const [kamarAInfo, setKamarAInfo] = useState({ price: 0, availableRooms: 0 });
