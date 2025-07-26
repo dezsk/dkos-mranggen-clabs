@@ -14,7 +14,8 @@ const DeskripsiKamarB = () => {
         });
 
         const data = await res.json();
-        const kamar = data.find((kost) => kost.roomType === 'B');
+        const kosts = Array.isArray(data.data) ? data.data : [];
+        const kamar = kosts.find((kost) => kost.roomType === 'B');
 
         if (kamar) {
           setKamarB(kamar);

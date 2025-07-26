@@ -25,7 +25,8 @@ const FasilitasKamarB = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        const kamarB = data.find((kost) => kost.roomType === "B");
+        const kosts = Array.isArray(data.data) ? data.data : [];
+        const kamarB = kosts.find((kost) => kost.roomType === "B");
         setFasilitas(kamarB?.facilities || []);
       })
       .catch((error) => {

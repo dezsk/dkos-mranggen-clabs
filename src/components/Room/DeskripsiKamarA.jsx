@@ -13,8 +13,9 @@ const DeskripsiKamarA = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        const data = await res.json();
-        const kamar = data.find((kost) => kost.roomType === 'A');
+        const resData = await res.json();
+        const kosts = Array.isArray(resData.data) ? resData.data : [];
+        const kamar = kosts.find((kost) => kost.roomType === 'A');
 
         if (kamar) {
           setKamarA(kamar);

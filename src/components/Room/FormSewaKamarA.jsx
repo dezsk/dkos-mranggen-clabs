@@ -15,7 +15,8 @@ const FormSewa = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
-        const kamarA = data.find((kost) => kost.roomType === 'A');
+        const kosts = Array.isArray(data.data) ? data.data : [];
+        const kamarA = kosts.find((kost) => kost.roomType === 'A');
 
         if (kamarA) {
           setKamarAInfo({

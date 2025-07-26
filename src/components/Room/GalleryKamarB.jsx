@@ -10,7 +10,9 @@ export default function GalleryKamarB() {
     })
       .then((res) => res.json())
       .then((data) => {
-        const kamarB = data.find((kost) => kost.roomType === "B");
+        
+        const kosts = Array.isArray(data.data) ? data.data : [];
+        const kamarB = kosts.find((kost) => kost.roomType === "B");
         setImage(kamarB?.images[0] || "");
       })
       .catch((error) => {

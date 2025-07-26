@@ -12,7 +12,8 @@ const TempatTerdekat = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        const allRules = data.flatMap((kost) => kost.rules || []);
+        const kosts = Array.isArray(data.data) ? data.data : [];
+        const allRules = kosts.flatMap((kost) => kost.rules || []);
         const uniqueRules = [...new Set(allRules)];
         setPlaces(uniqueRules);
       })
