@@ -34,7 +34,7 @@ router.use(verifyToken);
  *       500:
  *         description: Server error
  */
-router.get('/profile', userController.getProfile);
+router.get('/profile', verifyToken, userController.getProfile);
 /**
  * @swagger
  * /api/user/profile:
@@ -85,7 +85,7 @@ router.get('/profile', userController.getProfile);
  *       500:
  *         description: Server error
  */
-router.put('/profile', userController.updateProfile);
+router.put('/profile', verifyToken, userController.updateProfile);
 /**
  * @swagger
  * /api/user/profile/password:
@@ -131,7 +131,7 @@ router.put('/profile', userController.updateProfile);
  *       500:
  *         description: Server error
  */
-router.put('/profile/password', userController.changePassword);
+router.put('/profile/password', verifyToken, userController.changePassword);
 /**
  * @swagger
  * /api/user/profile/picture:
@@ -238,7 +238,7 @@ router.put('/profile/picture', userController.updateProfilePicture);
  *       500:
  *         description: Server error
  */
-router.get('/dashboard', userController.getDashboardSummary);
+router.get('/dashboard', verifyToken, userController.getDashboardSummary);
 
 /**
  * @swagger

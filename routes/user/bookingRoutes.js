@@ -148,7 +148,7 @@ router.get('/', bookingController.getUserBookings);
  *       500:
  *         description: Server error
  */
-router.get('/active', bookingController.getActiveBookings);
+router.get('/active', verifyToken, bookingController.getActiveBookings);
 /**
  * @swagger
  * /api/bookings/{bookingId}:
@@ -393,7 +393,7 @@ router.post('/', bookingController.createBooking);
  *       500:
  *         description: Server error
  */
-router.post('/payments/:paymentId/proof', uploadImage.single('proof'), bookingController.submitPaymentProof);
+router.post('/payments/:paymentId/proof', verifyToken, uploadImage.single('proof'), bookingController.submitPaymentProof);
 /**
  * @swagger
  * /api/bookings/{bookingId}/extend:

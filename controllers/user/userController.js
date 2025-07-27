@@ -101,6 +101,16 @@ exports.getDashboardSummary = async (req, res) => {
             user: req.user.id,
             status: 'waiting_confirmation'
         });
+        const verifiedPayments = await Payment.countDocuments({
+            user: req.user.id,
+            status: 'confirmed'
+        });
+
+        // Get recent payments (last 5)
+        const recentPayments = await Payment.find({ user: req.user.id })
+            .sort({ createdAt: -1 })
+            .limit(5)
+            .select('amount status type createdAt');
 
         // Get upcoming payment
         const upcomingPayment = await Payment.findOne({
@@ -117,12 +127,12 @@ exports.getDashboardSummary = async (req, res) => {
         res.status(200).json({
             success: true,
             data: {
+                totalPayments,
+                pendingPayments,
+                waitingConfirmation,
+                verifiedPayments,
+                recentPayments,
                 activeBookings,
-                paymentStats: {
-                    totalPayments,
-                    pendingPayments,
-                    waitingConfirmation
-                },
                 upcomingPayment,
                 totalBookings
             }

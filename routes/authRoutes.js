@@ -107,18 +107,18 @@ router.post('/register', async (req, res) => {
 
         // Validasi input
         if (!name || !email || !password) {
-            return res.status(400).json({ message: 'Semua field harus diisi' });
+            return res.status(400).json({ success: false, message: 'Semua field harus diisi' });
         }
 
         // Validasi email format
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            return res.status(400).json({ message: 'Format email tidak valid' });
+            return res.status(400).json({ success: false, message: 'Format email tidak valid' });
         }
 
         // Validasi password length
         if (password.length < 6) {
-            return res.status(400).json({ message: 'Password minimal 6 karakter' });
+            return res.status(400).json({ success: false, message: 'Password minimal 6 karakter' });
         }
 
         // Validasi role admin
@@ -126,13 +126,14 @@ router.post('/register', async (req, res) => {
             // Periksa apakah adminSecretKey disediakan dan valid
             if (!adminSecretKey || adminSecretKey !== process.env.ADMIN_SECRET_KEY) {
                 return res.status(403).json({ 
+                    success: false,
                     message: 'Tidak diizinkan mendaftar sebagai admin. Kunci rahasia admin tidak valid.' 
                 });
             }
         }
 
         const existingUser = await User.findOne({ email });
-        if (existingUser) return res.status(400).json({ message: 'Email sudah terdaftar' });
+        if (existingUser) return res.status(400).json({ success: false, message: 'Email sudah terdaftar' });
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = new User({ 
@@ -143,10 +144,10 @@ router.post('/register', async (req, res) => {
         });
 
         await user.save();
-        res.status(201).json({ message: 'Pendaftaran berhasil' });
+        res.status(201).json({ success: true, message: 'Pendaftaran berhasil' });
     } catch (err) {
         console.error('Registration error:', err);
-        res.status(500).json({ message: 'Pendaftaran gagal', error: err.message });
+        res.status(500).json({ success: false, message: 'Pendaftaran gagal', error: err.message });
     }
 });
 
@@ -209,19 +210,19 @@ router.post('/login', async (req, res) => {
 
         // Validasi input
         if (!email || !password) {
-            return res.status(400).json({ message: 'Email dan password harus diisi' });
+            return res.status(400).json({ success: false, message: 'Email dan password harus diisi' });
         }
 
         const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ message: 'Pengguna tidak ditemukan' });
+        if (!user) return res.status(404).json({ success: false, message: 'Pengguna tidak ditemukan' });
 
         // Cek status pengguna
         if (user.status === 'inactive') {
-            return res.status(403).json({ message: 'Akun tidak aktif' });
+            return res.status(403).json({ success: false, message: 'Akun tidak aktif' });
         }
 
         const validPassword = await bcrypt.compare(password, user.password);
-        if (!validPassword) return res.status(401).json({ message: 'Kredensial tidak valid' });
+        if (!validPassword) return res.status(401).json({ success: false, message: 'Kredensial tidak valid' });
 
         const token = jwt.sign(
             { id: user._id, role: user.role },
@@ -231,17 +232,21 @@ router.post('/login', async (req, res) => {
 
         // Mengembalikan informasi pengguna yang lebih lengkap
         res.status(200).json({ 
-            token,
-            user: {
-                id: user._id,
-                name: user.name,
-                email: user.email,
-                role: user.role
-            }
+            success: true,
+            data: {
+                token,
+                user: {
+                    id: user._id,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role
+                }
+            },
+            message: 'Login berhasil'
         });
     } catch (err) {
         console.error('Login error:', err);
-        res.status(500).json({ message: 'Login gagal', error: err.message });
+        res.status(500).json({ success: false, message: 'Login gagal', error: err.message });
     }
 });
 
@@ -300,16 +305,16 @@ router.get('/me', verifyToken, async (req, res) => {
         const user = await User.findById(req.user.id).select('-password');
         
         if (!user) {
-            return res.status(404).json({ message: 'Pengguna tidak ditemukan' });
+            return res.status(404).json({ success: false, message: 'Pengguna tidak ditemukan' });
         }
         
         res.status(200).json({
             success: true,
-            user: user
+            data: user
         });
     } catch (err) {
         console.error('Get user profile error:', err);
-        res.status(500).json({ message: 'Gagal mengambil profil pengguna', error: err.message });
+        res.status(500).json({ success: false, message: 'Gagal mengambil profil pengguna', error: err.message });
     }
 });
 

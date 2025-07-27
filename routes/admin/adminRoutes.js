@@ -551,7 +551,7 @@ router.get('/payments/verification', paymentController.getPaymentsForVerificatio
  *       500:
  *         description: Server error
  */
-router.put('/payments/:paymentId/verify', paymentController.verifyPayment);
+router.post('/payments/:paymentId/verify', paymentController.verifyPayment);
 /**
  * @swagger
  * /api/admin/payments/statistics:

@@ -9,9 +9,9 @@ exports.getAllGalleryItems = async (req, res) => {
             .populate('kost', 'name')
             .populate('uploadedBy', 'name')
             .sort({ createdAt: -1 });
-        res.status(200).json(galleryItems);
+        res.status(200).json({ success: true, data: galleryItems });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching gallery items' });
+        res.status(500).json({ success: false, message: 'Error fetching gallery items' });
     }
 };
 
@@ -24,9 +24,9 @@ exports.getGalleryByKost = async (req, res) => {
             .populate('uploadedBy', 'name')
             .sort({ createdAt: -1 });
 
-        res.status(200).json(galleryItems);
+        res.status(200).json({ success: true, data: galleryItems });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching kost gallery' });
+        res.status(500).json({ success: false, message: 'Error fetching kost gallery' });
     }
 };
 
@@ -39,7 +39,7 @@ exports.uploadGalleryItem = async (req, res) => {
         // Verify kost exists
         const kost = await Kost.findById(kostId);
         if (!kost) {
-            return res.status(404).json({ message: 'Kost not found' });
+            return res.status(404).json({ success: false, message: 'Kost not found' });
         }
 
         // Handle file upload if present
@@ -50,7 +50,7 @@ exports.uploadGalleryItem = async (req, res) => {
             // Jika tidak ada file tetapi ada URL (untuk video)
             mediaUrl = req.body.mediaUrl;
         } else {
-            return res.status(400).json({ message: 'Media file or URL is required' });
+            return res.status(400).json({ success: false, message: 'Media file or URL is required' });
         }
 
         // Tentukan mediaType berdasarkan file yang diupload jika tidak ditentukan
@@ -60,7 +60,7 @@ exports.uploadGalleryItem = async (req, res) => {
             } else if (mediaUrl.includes('youtube') || mediaUrl.includes('youtu.be')) {
                 mediaType = 'video';
             } else {
-                return res.status(400).json({ message: 'Media type is required' });
+                return res.status(400).json({ success: false, message: 'Media type is required' });
             }
         }
 
@@ -81,10 +81,10 @@ exports.uploadGalleryItem = async (req, res) => {
             await kost.save();
         }
 
-        res.status(201).json(savedGalleryItem);
+        res.status(201).json({ success: true, data: savedGalleryItem, message: 'Gallery item uploaded successfully' });
     } catch (error) {
         console.error('Error uploading gallery item:', error);
-        res.status(500).json({ message: 'Error uploading gallery item', error: error.message });
+        res.status(500).json({ success: false, message: 'Error uploading gallery item', error: error.message });
     }
 };
 
@@ -94,7 +94,7 @@ exports.updateGalleryItem = async (req, res) => {
         // Dapatkan item galeri yang akan diupdate
         const galleryItem = await Gallery.findById(req.params.id);
         if (!galleryItem) {
-            return res.status(404).json({ message: 'Gallery item not found' });
+            return res.status(404).json({ success: false, message: 'Gallery item not found' });
         }
 
         const updateData = { ...req.body, updatedAt: new Date() };
@@ -148,10 +148,10 @@ exports.updateGalleryItem = async (req, res) => {
             }
         }
 
-        res.status(200).json(updatedGalleryItem);
+        res.status(200).json({ success: true, data: updatedGalleryItem, message: 'Gallery item updated successfully' });
     } catch (error) {
         console.error('Error updating gallery item:', error);
-        res.status(500).json({ message: 'Error updating gallery item', error: error.message });
+        res.status(500).json({ success: false, message: 'Error updating gallery item', error: error.message });
     }
 };
 
@@ -160,7 +160,7 @@ exports.deleteGalleryItem = async (req, res) => {
     try {
         const galleryItem = await Gallery.findById(req.params.id);
         if (!galleryItem) {
-            return res.status(404).json({ message: 'Gallery item not found' });
+            return res.status(404).json({ success: false, message: 'Gallery item not found' });
         }
 
         // Remove image from kost if it's a photo
@@ -190,9 +190,9 @@ exports.deleteGalleryItem = async (req, res) => {
         }
 
         await galleryItem.remove();
-        res.status(200).json({ message: 'Gallery item deleted successfully' });
+        res.status(200).json({ success: true, message: 'Gallery item deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting gallery item' });
+        res.status(500).json({ success: false, message: 'Error deleting gallery item' });
     }
 };
 
@@ -201,15 +201,15 @@ exports.toggleGalleryItemStatus = async (req, res) => {
     try {
         const galleryItem = await Gallery.findById(req.params.id);
         if (!galleryItem) {
-            return res.status(404).json({ message: 'Gallery item not found' });
+            return res.status(404).json({ success: false, message: 'Gallery item not found' });
         }
 
         galleryItem.isActive = !galleryItem.isActive;
         const updatedGalleryItem = await galleryItem.save();
 
-        res.status(200).json(updatedGalleryItem);
+        res.status(200).json({ success: true, data: updatedGalleryItem, message: 'Gallery item status toggled successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error toggling gallery item status' });
+        res.status(500).json({ success: false, message: 'Error toggling gallery item status' });
     }
 };
 
@@ -234,16 +234,19 @@ exports.getGalleryStatistics = async (req, res) => {
             await Kost.findById(kostWithMostMedia[0]._id) : null;
 
         res.status(200).json({
-            totalItems,
-            activeItems,
-            imageCount,
-            videoCount,
-            kostWithMostMedia: kost ? {
-                name: kost.name,
-                count: kostWithMostMedia[0].count
-            } : null
+            success: true,
+            data: {
+                totalItems,
+                activeItems,
+                imageCount,
+                videoCount,
+                kostWithMostMedia: kost ? {
+                    name: kost.name,
+                    count: kostWithMostMedia[0].count
+                } : null
+            }
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching gallery statistics' });
+        res.status(500).json({ success: false, message: 'Error fetching gallery statistics' });
     }
 };

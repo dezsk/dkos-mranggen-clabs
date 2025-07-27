@@ -11,9 +11,9 @@ exports.getAllPayments = async (req, res) => {
             .populate('kost', 'name roomType')
             .populate('booking', 'roomNumber')
             .sort({ createdAt: -1 });
-        res.status(200).json(payments);
+        res.status(200).json({ success: true, data: payments });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching payments' });
+        res.status(500).json({ success: false, message: 'Error fetching payments' });
     }
 };
 
@@ -26,9 +26,9 @@ exports.getPaymentsForVerification = async (req, res) => {
             .populate('booking', 'startDate endDate duration')
             .sort({ paymentDate: 1 });
 
-        res.status(200).json(payments);
+        res.status(200).json({ success: true, data: payments });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching payments for verification' });
+        res.status(500).json({ success: false, message: 'Error fetching payments for verification' });
     }
 };
 
@@ -40,7 +40,7 @@ exports.verifyPayment = async (req, res) => {
 
         const payment = await Payment.findById(paymentId);
         if (!payment) {
-            return res.status(404).json({ message: 'Payment not found' });
+            return res.status(404).json({ success: false, message: 'Payment not found' });
         }
 
         payment.status = status;
@@ -86,9 +86,9 @@ exports.verifyPayment = async (req, res) => {
 
         const updatedPayment = await payment.save();
 
-        res.status(200).json(updatedPayment);
+        res.status(200).json({ success: true, data: updatedPayment, message: 'Payment verification completed' });
     } catch (error) {
-        res.status(500).json({ message: 'Error verifying payment' });
+        res.status(500).json({ success: false, message: 'Error verifying payment' });
     }
 };
 
@@ -116,21 +116,24 @@ exports.getPaymentStatistics = async (req, res) => {
         ]);
 
         res.status(200).json({
-            totalPayments,
-            confirmedPayments,
-            pendingPayments,
-            waitingConfirmation,
-            rejectedPayments,
-            totalAmountCollected: totalAmount[0]?.total || 0,
-            paymentsByType: paymentsByType.reduce((acc, curr) => {
-                acc[curr._id] = {
-                    count: curr.count,
-                    total: curr.total
-                };
-                return acc;
-            }, {})
+            success: true,
+            data: {
+                totalPayments,
+                confirmedPayments,
+                pendingPayments,
+                waitingConfirmation,
+                rejectedPayments,
+                totalAmountCollected: totalAmount[0]?.total || 0,
+                paymentsByType: paymentsByType.reduce((acc, curr) => {
+                    acc[curr._id] = {
+                        count: curr.count,
+                        total: curr.total
+                    };
+                    return acc;
+                }, {})
+            }
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching payment statistics' });
+        res.status(500).json({ success: false, message: 'Error fetching payment statistics' });
     }
 };

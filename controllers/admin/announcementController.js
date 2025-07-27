@@ -6,9 +6,9 @@ exports.getAllAnnouncements = async (req, res) => {
         const announcements = await Announcement.find()
             .populate('author', 'name')
             .sort({ createdAt: -1 });
-        res.status(200).json(announcements);
+        res.status(200).json({ success: true, data: announcements });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching announcements' });
+        res.status(500).json({ success: false, message: 'Error fetching announcements' });
     }
 };
 
@@ -18,11 +18,11 @@ exports.getAnnouncementById = async (req, res) => {
         const announcement = await Announcement.findById(req.params.id)
             .populate('author', 'name');
         if (!announcement) {
-            return res.status(404).json({ message: 'Announcement not found' });
+            return res.status(404).json({ success: false, message: 'Announcement not found' });
         }
-        res.status(200).json(announcement);
+        res.status(200).json({ success: true, data: announcement });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching announcement' });
+        res.status(500).json({ success: false, message: 'Error fetching announcement' });
     }
 };
 
@@ -41,9 +41,9 @@ exports.createAnnouncement = async (req, res) => {
         });
 
         const savedAnnouncement = await newAnnouncement.save();
-        res.status(201).json(savedAnnouncement);
+        res.status(201).json({ success: true, data: savedAnnouncement, message: 'Announcement created successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error creating announcement' });
+        res.status(500).json({ success: false, message: 'Error creating announcement' });
     }
 };
 
@@ -57,12 +57,12 @@ exports.updateAnnouncement = async (req, res) => {
         );
 
         if (!updatedAnnouncement) {
-            return res.status(404).json({ message: 'Announcement not found' });
+            return res.status(404).json({ success: false, message: 'Announcement not found' });
         }
 
-        res.status(200).json(updatedAnnouncement);
+        res.status(200).json({ success: true, data: updatedAnnouncement, message: 'Announcement updated successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating announcement' });
+        res.status(500).json({ success: false, message: 'Error updating announcement' });
     }
 };
 
@@ -72,12 +72,12 @@ exports.deleteAnnouncement = async (req, res) => {
         const deletedAnnouncement = await Announcement.findByIdAndDelete(req.params.id);
         
         if (!deletedAnnouncement) {
-            return res.status(404).json({ message: 'Announcement not found' });
+            return res.status(404).json({ success: false, message: 'Announcement not found' });
         }
 
-        res.status(200).json({ message: 'Announcement deleted successfully' });
+        res.status(200).json({ success: true, message: 'Announcement deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting announcement' });
+        res.status(500).json({ success: false, message: 'Error deleting announcement' });
     }
 };
 
@@ -94,9 +94,9 @@ exports.getActiveAnnouncements = async (req, res) => {
         }).populate('author', 'name')
           .sort({ priority: -1, createdAt: -1 });
 
-        res.status(200).json(announcements);
+        res.status(200).json({ success: true, data: announcements });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching active announcements' });
+        res.status(500).json({ success: false, message: 'Error fetching active announcements' });
     }
 };
 

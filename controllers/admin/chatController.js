@@ -12,10 +12,10 @@ exports.getAllChats = async (req, res) => {
         .populate('lastMessage.sender', 'name')
         .sort({ 'lastMessage.timestamp': -1 });
 
-        res.status(200).json(chats);
+        res.status(200).json({ success: true, data: chats });
     } catch (error) {
         console.error('Error fetching admin chats:', error);
-        res.status(500).json({ message: 'Error fetching chats' });
+        res.status(500).json({ success: false, message: 'Error fetching chats' });
     }
 };
 
@@ -30,10 +30,10 @@ exports.getAllUsersForChat = async (req, res) => {
         })
         .select('name profilePicture');
 
-        res.status(200).json(users);
+        res.status(200).json({ success: true, data: users });
     } catch (error) {
         console.error('Error fetching users for chat:', error);
-        res.status(500).json({ message: 'Error fetching users' });
+        res.status(500).json({ success: false, message: 'Error fetching users' });
     }
 };
 
@@ -45,12 +45,12 @@ exports.getChatById = async (req, res) => {
             .populate('messages.sender', 'name profilePicture role');
 
         if (!chat) {
-            return res.status(404).json({ message: 'Chat not found' });
+            return res.status(404).json({ success: false, message: 'Chat not found' });
         }
 
         // Check if admin is participant in this chat
         if (!chat.participants.some(p => p._id.toString() === req.user.id)) {
-            return res.status(403).json({ message: 'Not authorized to access this chat' });
+            return res.status(403).json({ success: false, message: 'Not authorized to access this chat' });
         }
 
         // Mark all unread messages as read
@@ -69,10 +69,10 @@ exports.getChatById = async (req, res) => {
             await chat.save();
         }
 
-        res.status(200).json(chat);
+        res.status(200).json({ success: true, data: chat });
     } catch (error) {
         console.error('Error fetching chat:', error);
-        res.status(500).json({ message: 'Error fetching chat details' });
+        res.status(500).json({ success: false, message: 'Error fetching chat details' });
     }
 };
 
@@ -82,18 +82,18 @@ exports.createChat = async (req, res) => {
         const { userId } = req.body;
 
         if (!userId) {
-            return res.status(400).json({ message: 'User ID is required' });
+            return res.status(400).json({ success: false, message: 'User ID is required' });
         }
 
         // Check if user exists
         const user = await User.findById(userId);
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ success: false, message: 'User not found' });
         }
 
         // Check if user is not an admin
         if (user.role === 'admin') {
-            return res.status(400).json({ message: 'Cannot create chat with another admin' });
+            return res.status(400).json({ success: false, message: 'Cannot create chat with another admin' });
         }
 
         // Check if chat already exists between admin and user
@@ -105,7 +105,7 @@ exports.createChat = async (req, res) => {
 
         // If chat exists, return it
         if (chat) {
-            return res.status(200).json(chat);
+            return res.status(200).json({ success: true, data: chat });
         }
 
         // Create new chat
@@ -120,10 +120,10 @@ exports.createChat = async (req, res) => {
         chat = await Chat.findById(chat._id)
             .populate('participants', 'name profilePicture role');
 
-        res.status(201).json(chat);
+        res.status(201).json({ success: true, data: chat });
     } catch (error) {
         console.error('Error creating chat:', error);
-        res.status(500).json({ message: 'Error creating chat' });
+        res.status(500).json({ success: false, message: 'Error creating chat' });
     }
 };
 
@@ -134,17 +134,17 @@ exports.sendMessage = async (req, res) => {
         const { content } = req.body;
 
         if (!content) {
-            return res.status(400).json({ message: 'Message content is required' });
+            return res.status(400).json({ success: false, message: 'Message content is required' });
         }
 
         const chat = await Chat.findById(chatId);
         if (!chat) {
-            return res.status(404).json({ message: 'Chat not found' });
+            return res.status(404).json({ success: false, message: 'Chat not found' });
         }
 
         // Check if admin is participant in this chat
         if (!chat.participants.includes(req.user.id)) {
-            return res.status(403).json({ message: 'Not authorized to send message in this chat' });
+            return res.status(403).json({ success: false, message: 'Not authorized to send message in this chat' });
         }
 
         // Add new message
@@ -175,10 +175,10 @@ exports.sendMessage = async (req, res) => {
             .populate('messages.sender', 'name profilePicture role')
             .populate('lastMessage.sender', 'name profilePicture role');
 
-        res.status(201).json(updatedChat);
+        res.status(201).json({ success: true, data: updatedChat });
     } catch (error) {
         console.error('Error sending message:', error);
-        res.status(500).json({ message: 'Error sending message' });
+        res.status(500).json({ success: false, message: 'Error sending message' });
     }
 };
 
@@ -210,12 +210,15 @@ exports.getChatStatistics = async (req, res) => {
         });
 
         res.status(200).json({
-            totalChats,
-            chatsWithUnreadMessages,
-            totalMessagesSent
+            success: true,
+            data: {
+                totalChats,
+                chatsWithUnreadMessages,
+                totalMessagesSent
+            }
         });
     } catch (error) {
         console.error('Error fetching chat statistics:', error);
-        res.status(500).json({ message: 'Error fetching chat statistics' });
+        res.status(500).json({ success: false, message: 'Error fetching chat statistics' });
     }
 };

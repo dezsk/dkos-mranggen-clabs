@@ -4,9 +4,9 @@ const Kost = require('../../models/Kost');
 exports.getAllKost = async (req, res) => {
     try {
         const kosts = await Kost.find();
-        res.status(200).json(kosts);
+        res.status(200).json({ success: true, data: kosts });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching kost data' });
+        res.status(500).json({ success: false, message: 'Error fetching kost data' });
     }
 };
 
@@ -14,10 +14,10 @@ exports.getAllKost = async (req, res) => {
 exports.getKostById = async (req, res) => {
     try {
         const kost = await Kost.findById(req.params.id);
-        if (!kost) return res.status(404).json({ message: 'Kost not found' });
-        res.status(200).json(kost);
+        if (!kost) return res.status(404).json({ success: false, message: 'Kost not found' });
+        res.status(200).json({ success: true, data: kost });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching kost data' });
+        res.status(500).json({ success: false, message: 'Error fetching kost data' });
     }
 };
 
@@ -26,9 +26,9 @@ exports.createKost = async (req, res) => {
     try {
         const newKost = new Kost(req.body);
         const savedKost = await newKost.save();
-        res.status(201).json(savedKost);
+        res.status(201).json({ success: true, data: savedKost, message: 'Kost created successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error creating kost' });
+        res.status(500).json({ success: false, message: 'Error creating kost' });
     }
 };
 
@@ -40,10 +40,10 @@ exports.updateKost = async (req, res) => {
             req.body,
             { new: true, runValidators: true }
         );
-        if (!updatedKost) return res.status(404).json({ message: 'Kost not found' });
-        res.status(200).json(updatedKost);
+        if (!updatedKost) return res.status(404).json({ success: false, message: 'Kost not found' });
+        res.status(200).json({ success: true, data: updatedKost, message: 'Kost updated successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating kost' });
+        res.status(500).json({ success: false, message: 'Error updating kost' });
     }
 };
 
@@ -51,10 +51,10 @@ exports.updateKost = async (req, res) => {
 exports.deleteKost = async (req, res) => {
     try {
         const deletedKost = await Kost.findByIdAndDelete(req.params.id);
-        if (!deletedKost) return res.status(404).json({ message: 'Kost not found' });
-        res.status(200).json({ message: 'Kost deleted successfully' });
+        if (!deletedKost) return res.status(404).json({ success: false, message: 'Kost not found' });
+        res.status(200).json({ success: true, message: 'Kost deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting kost' });
+        res.status(500).json({ success: false, message: 'Error deleting kost' });
     }
 };
 
@@ -62,11 +62,12 @@ exports.deleteKost = async (req, res) => {
 exports.updateRoomAvailability = async (req, res) => {
     try {
         const kost = await Kost.findById(req.params.id);
-        if (!kost) return res.status(404).json({ message: 'Kost not found' });
+        if (!kost) return res.status(404).json({ success: false, message: 'Kost not found' });
 
         const { availableRooms } = req.body;
         if (availableRooms > kost.totalRooms) {
             return res.status(400).json({ 
+                success: false,
                 message: 'Available rooms cannot exceed total rooms' 
             });
         }
@@ -75,8 +76,8 @@ exports.updateRoomAvailability = async (req, res) => {
         kost.status = availableRooms === 0 ? 'full' : 'available';
         
         const updatedKost = await kost.save();
-        res.status(200).json(updatedKost);
+        res.status(200).json({ success: true, data: updatedKost, message: 'Room availability updated successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error updating room availability' });
+        res.status(500).json({ success: false, message: 'Error updating room availability' });
     }
 };

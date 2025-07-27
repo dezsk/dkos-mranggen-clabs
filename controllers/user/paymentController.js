@@ -15,6 +15,7 @@ exports.submitPaymentProof = async (req, res) => {
 
         if (!payment) {
             return res.status(404).json({
+                success: false,
                 message: 'Payment not found or already processed'
             });
         }
@@ -26,9 +27,9 @@ exports.submitPaymentProof = async (req, res) => {
 
         const updatedPayment = await payment.save();
 
-        res.status(200).json(updatedPayment);
+        res.status(200).json({ success: true, data: updatedPayment, message: 'Payment proof submitted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error submitting payment proof' });
+        res.status(500).json({ success: false, message: 'Error submitting payment proof' });
     }
 };
 
@@ -40,9 +41,9 @@ exports.getUserPaymentHistory = async (req, res) => {
             .populate('booking', 'startDate endDate roomNumber status')
             .sort({ createdAt: -1 });
 
-        res.status(200).json(payments);
+        res.status(200).json({ success: true, data: payments });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching payment history' });
+        res.status(500).json({ success: false, message: 'Error fetching payment history' });
     }
 };
 
@@ -57,12 +58,12 @@ exports.getPaymentDetails = async (req, res) => {
           .populate('verifiedBy', 'name');
 
         if (!payment) {
-            return res.status(404).json({ message: 'Payment not found' });
+            return res.status(404).json({ success: false, message: 'Payment not found' });
         }
 
-        res.status(200).json(payment);
+        res.status(200).json({ success: true, data: payment });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching payment details' });
+        res.status(500).json({ success: false, message: 'Error fetching payment details' });
     }
 };
 
@@ -75,9 +76,9 @@ exports.getPendingPayments = async (req, res) => {
         }).populate('kost', 'name roomType price')
           .populate('booking', 'startDate endDate duration');
 
-        res.status(200).json(pendingPayments);
+        res.status(200).json({ success: true, data: pendingPayments });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching pending payments' });
+        res.status(500).json({ success: false, message: 'Error fetching pending payments' });
     }
 };
 
@@ -104,13 +105,16 @@ exports.getUserPaymentStatistics = async (req, res) => {
         ]);
 
         res.status(200).json({
-            totalPayments,
-            confirmedPayments,
-            pendingPayments,
-            waitingConfirmation,
-            totalSpent: totalSpent[0]?.total || 0
+            success: true,
+            data: {
+                totalPayments,
+                confirmedPayments,
+                pendingPayments,
+                waitingConfirmation,
+                totalSpent: totalSpent[0]?.total || 0
+            }
         });
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching payment statistics' });
+        res.status(500).json({ success: false, message: 'Error fetching payment statistics' });
     }
 };

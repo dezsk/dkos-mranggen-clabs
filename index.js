@@ -29,11 +29,13 @@ const userRoutes = require('./routes/user/userRoutes');
 const bookingRoutes = require('./routes/user/bookingRoutes');
 const userChatRoutes = require('./routes/user/chatRoutes');
 const kostUserRoutes = require('./routes/user/kostRoutes');
+const paymentUserRoutes = require('./routes/user/paymentRoutes');
 
 app.use('/api/user', userRoutes);
 app.use('/api/booking', bookingRoutes);
 app.use('/api/user', userChatRoutes);
 app.use('/api/user/kost', kostUserRoutes);
+app.use('/api/user/payments', paymentUserRoutes);
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {

@@ -11,10 +11,10 @@ exports.getUserChats = async (req, res) => {
         .populate('lastMessage.sender', 'name')
         .sort({ 'lastMessage.timestamp': -1 });
 
-        res.status(200).json(chats);
+        res.status(200).json({ success: true, data: chats });
     } catch (error) {
         console.error('Error fetching user chats:', error);
-        res.status(500).json({ message: 'Error fetching chats' });
+        res.status(500).json({ success: false, message: 'Error fetching chats' });
     }
 };
 
@@ -26,12 +26,12 @@ exports.getChatById = async (req, res) => {
             .populate('messages.sender', 'name profilePicture role');
 
         if (!chat) {
-            return res.status(404).json({ message: 'Chat not found' });
+            return res.status(404).json({ success: false, message: 'Chat not found' });
         }
 
         // Check if user is participant in this chat
         if (!chat.participants.some(p => p._id.toString() === req.user.id)) {
-            return res.status(403).json({ message: 'Not authorized to access this chat' });
+            return res.status(403).json({ success: false, message: 'Not authorized to access this chat' });
         }
 
         // Mark all unread messages as read
@@ -50,10 +50,10 @@ exports.getChatById = async (req, res) => {
             await chat.save();
         }
 
-        res.status(200).json(chat);
+        res.status(200).json({ success: true, data: chat });
     } catch (error) {
         console.error('Error fetching chat:', error);
-        res.status(500).json({ message: 'Error fetching chat details' });
+        res.status(500).json({ success: false, message: 'Error fetching chat details' });
     }
 };
 
@@ -63,13 +63,13 @@ exports.createOrGetChat = async (req, res) => {
         const { userId } = req.body;
 
         if (!userId) {
-            return res.status(400).json({ message: 'User ID is required' });
+            return res.status(400).json({ success: false, message: 'User ID is required' });
         }
 
         // Check if user exists
         const otherUser = await User.findById(userId);
         if (!otherUser) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ success: false, message: 'User not found' });
         }
 
         // Check if chat already exists between these users
@@ -81,7 +81,7 @@ exports.createOrGetChat = async (req, res) => {
 
         // If chat exists, return it
         if (chat) {
-            return res.status(200).json(chat);
+            return res.status(200).json({ success: true, data: chat });
         }
 
         // Create new chat
@@ -96,10 +96,10 @@ exports.createOrGetChat = async (req, res) => {
         chat = await Chat.findById(chat._id)
             .populate('participants', 'name profilePicture role');
 
-        res.status(201).json(chat);
+        res.status(201).json({ success: true, data: chat });
     } catch (error) {
         console.error('Error creating chat:', error);
-        res.status(500).json({ message: 'Error creating chat' });
+        res.status(500).json({ success: false, message: 'Error creating chat' });
     }
 };
 
@@ -110,17 +110,17 @@ exports.sendMessage = async (req, res) => {
         const { content } = req.body;
 
         if (!content) {
-            return res.status(400).json({ message: 'Message content is required' });
+            return res.status(400).json({ success: false, message: 'Message content is required' });
         }
 
         const chat = await Chat.findById(chatId);
         if (!chat) {
-            return res.status(404).json({ message: 'Chat not found' });
+            return res.status(404).json({ success: false, message: 'Chat not found' });
         }
 
         // Check if user is participant in this chat
         if (!chat.participants.includes(req.user.id)) {
-            return res.status(403).json({ message: 'Not authorized to send message in this chat' });
+            return res.status(403).json({ success: false, message: 'Not authorized to send message in this chat' });
         }
 
         // Add new message
@@ -151,9 +151,9 @@ exports.sendMessage = async (req, res) => {
             .populate('messages.sender', 'name profilePicture role')
             .populate('lastMessage.sender', 'name profilePicture role');
 
-        res.status(201).json(updatedChat);
+        res.status(201).json({ success: true, data: updatedChat });
     } catch (error) {
         console.error('Error sending message:', error);
-        res.status(500).json({ message: 'Error sending message' });
+        res.status(500).json({ success: false, message: 'Error sending message' });
     }
 };
